@@ -10,6 +10,7 @@ import android.Manifest;
 
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -23,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -39,6 +41,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
     }
 
 
@@ -162,16 +165,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // permissions this app might request
         }
     }
-    /*
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == ALLOW_APP_GPS) {
-            if (permissions.length == 1 &&
-                    permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mMap.setMyLocationEnabled(true);
-            } else {
-                // Permission was denied. Display an error message.
-            }
-        }*/
+
+    // Show friend's position every 30 sec
+    private Handler myHandler;
+    private Runnable myRunnable = new Runnable() {
+        @Override
+        public void run() {
+            int lat = 0; // User.getLat();
+            int lng = 0; // User.getLng();
+
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(10, 10))
+                    .title("Théo"));//User.getName();
+
+            myHandler.postDelayed(this,30000);
+        }
+    };
+
+    public void onPause() {
+        super.onPause();
+        // Stop callback
+        if(myHandler != null)
+            myHandler.removeCallbacks(myRunnable);
+    }
+
+    public void showFriend() {
+        myHandler = new Handler();
+        myHandler.postDelayed(myRunnable,30000);
+    }
+
+    public void hideFriend() {
+
+    }
+
 }
