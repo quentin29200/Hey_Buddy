@@ -3,12 +3,14 @@ package com.example.quentin.heybuddy;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-
+import android.Manifest;
 
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private static long MIN_TIME_UPDATE = 60000;
     private static long MIN_DISTANCE_UPDATES = 150;
+    final private static int ALLOW_APP_GPS = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,29 +61,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
 
 
-        try   {
-            LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        try {
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-            if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-
-                ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
-                        123 );
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            ALLOW_APP_GPS);
+                }
             }
-
             // Get GPS and network status
             Boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
             if (!isGPSEnabled)    {
+                Log.e("MapsActivity", "GPS pas activé" );
                 // cannot get location
-                AlertDialog alertDialog = new AlertDialog.Builder(MapsActivity.this).create();
-                alertDialog.setTitle("Alert");
-                alertDialog.setMessage("First enable GPS ACCESS in settings.");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                dialog.setMessage("Veuillez activer votre GPS");
+                dialog.setPositiveButton("Lancer GPS", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        // TODO Auto-generated method stub
+                        Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(myIntent);
+                        //get gps
+                    }
+                });
+                dialog.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        // TODO Auto-generated method stub
+                    }
+                });
+                dialog.show();
             }
 
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_UPDATE, MIN_DISTANCE_UPDATES, new LocationListener() {
@@ -104,36 +122,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 public void onLocationChanged(Location location) {
                     LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
+                    mMap.moveCamera(CameraUpdateFactory.zoomBy(13));
                 }
             });
-
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            mMap.setMyLocationEnabled(true);
+            /*Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
+            mMap.moveCamera(CameraUpdateFactory.zoomBy(13));
             Log.d("GPS", "Latitude " + location.getLatitude() + " et longitude " + location.getLongitude());
-
-        } catch (Exception ex)  {
-            Log.d("MapsActivity", "Error creating location service: " + ex.getMessage() );
+*/
+        } catch (Exception ex) {
+            Log.i("MapsActivity", "Error creating location service: " + ex.getMessage());
 
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case 123: {
-                if (grantResults[0] ==
-                        PackageManager.PERMISSION_GRANTED){
-                    // permission was granted, woho!
-                } else {
+            case ALLOW_APP_GPS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        Log.e("MapsActivity", "GPS autorisé" );
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
 
-                    Toast.makeText(getApplicationContext(),"Autorisation d'utilisation du GPS requise.",Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e("MapsActivity", "GPS pas autorisé" );
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
                 }
                 return;
             }
-        }
 
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
+    /*
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == ALLOW_APP_GPS) {
+            if (permissions.length == 1 &&
+                    permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mMap.setMyLocationEnabled(true);
+            } else {
+                // Permission was denied. Display an error message.
+            }
+        }*/
 }
