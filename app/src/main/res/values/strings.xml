@@ -1,4 +1,8 @@
 <resources>
+    <!-- Global strings -->
     <string name="app_name">HeyBuddy</string>
     <string name="title_activity_maps">Map</string>
+
+    <!-- Menu strings -->
+    <string name="test_string_to_remove">Toto</string>
 </resources>
