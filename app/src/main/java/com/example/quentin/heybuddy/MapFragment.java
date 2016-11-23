@@ -24,13 +24,14 @@ import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
+    private GoogleMap googleMap;
+    private MapView mapView;
     private static long MIN_TIME_UPDATE = 60000;
     private static long MIN_DISTANCE_UPDATES = 150;
     final private static int ALLOW_APP_GPS = 0;
@@ -51,8 +52,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         LinearLayout llLayout = (LinearLayout) inflater.inflate(R.layout.activity_maps, container, false);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        // SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        // mapFragment.getMapAsync(this);
+
+        try {
+            View v = getView();
+            mapView = (MapView) v.findViewById(R.id.map);
+            mapView.onCreate(savedInstanceState);
+            mapView.onResume();
+            mapView.getMapAsync(this);
+        } catch (NullPointerException npe) {
+            Log.e("ERROR", npe.getMessage());
+        }
 
         // Must return the root layer
         return llLayout;
@@ -75,7 +86,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        this.googleMap = googleMap;
 
         try {
             LocationManager locationManager = (LocationManager) super.getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -136,11 +147,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 public void onLocationChanged(Location location) {
                     LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
-                    mMap.moveCamera(CameraUpdateFactory.zoomBy(13));
+                    MapFragment.this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
+                    MapFragment.this.googleMap.moveCamera(CameraUpdateFactory.zoomBy(13));
                 }
             });
-            mMap.setMyLocationEnabled(true);
+            this.googleMap.setMyLocationEnabled(true);
         } catch (Exception ex) {
             Log.i("MapsActivity", "Error creating location service: " + ex.getMessage());
         }
