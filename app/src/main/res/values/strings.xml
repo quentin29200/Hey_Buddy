@@ -5,4 +5,9 @@
 
     <!-- Menu strings -->
     <string name="test_string_to_remove">Toto</string>
+
+    <!-- Map strings -->
+    <string name="pls_accept_GPS">Veuillez activer votre GPS</string>
+    <string name="run_GPS">Lancer GPS</string>
+    <string name="cancel">Annuler</string>
 </resources>
