@@ -1,4 +1,4 @@
-package com.example.quentin.heybuddy;
+package fr.istic.m2miage.heybuddy;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

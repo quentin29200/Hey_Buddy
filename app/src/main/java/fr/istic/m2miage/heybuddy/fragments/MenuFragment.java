@@ -1,11 +1,13 @@
-package com.example.quentin.heybuddy;
+package fr.istic.m2miage.heybuddy.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import fr.istic.m2miage.heybuddy.R;
 
 public class MenuFragment extends Fragment {
 

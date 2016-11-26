@@ -1,4 +1,4 @@
-package com.example.quentin.heybuddy;
+package fr.istic.m2miage.heybuddy;
 
 import org.junit.Test;
 
