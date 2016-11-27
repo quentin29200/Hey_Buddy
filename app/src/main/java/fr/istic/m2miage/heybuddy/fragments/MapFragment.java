@@ -10,6 +10,7 @@ import android.Manifest;
 
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -38,6 +39,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     protected GoogleMap googleMap;
     private MapView mapView;
+    private User friendToShow;
     private static long MIN_TIME_UPDATE = 60000;
     private static long MIN_DISTANCE_UPDATES = 150;
     final private static int ALLOW_APP_GPS = 0;
@@ -192,9 +194,31 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
      * @param u - {User} User to show on the map
      */
     public void showFriendOnMap(@NonNull User u) {
-        String username = u.getUsername();
-        googleMap.addMarker(new MarkerOptions()
-        .position(new LatLng(10, 10))
-                .title(username));
+        friendToShow = u;
+        myHandler = new Handler();
+        myHandler.postDelayed(myRunnable,30000);
+    }
+
+    // Show friend's position every 30 sec
+    private Handler myHandler;
+    private Runnable myRunnable = new Runnable() {
+        @Override
+        public void run() {
+            int lat = 0; // User.getLat();
+            int lng = 0; // User.getLng();
+
+            googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(10, 10))
+                    .title(friendToShow.getUsername()));
+
+            myHandler.postDelayed(this,30000);
+        }
+    };
+
+    public void onPause() {
+        super.onPause();
+        // Stop callback
+        if(myHandler != null)
+            myHandler.removeCallbacks(myRunnable);
     }
 }
