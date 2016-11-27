@@ -18,40 +18,32 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import fr.istic.m2miage.heybuddy.R;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String TAG = "LoginActivity";
-    private Button btnLogin, btnLinkToSignUp;
-    private ProgressBar progressBar;
+    private static final String TAG = LoginActivity.class.getName();
+
     private FirebaseAuth auth;
-    private EditText loginInputEmail, loginInputPassword;
-    private TextInputLayout loginInputLayoutEmail, loginInputLayoutPassword;
+
+    @BindView(R.id.btn_login) Button btnLogin;
+    @BindView(R.id.btn_link_signup) Button btnLinkToSignUp;
+    @BindView(R.id.progressBar) ProgressBar progressBar;
+    @BindView(R.id.login_input_layout_email) TextInputLayout loginInputLayoutEmail;
+    @BindView(R.id.login_input_layout_password) TextInputLayout loginInputLayoutPassword;
+    @BindView(R.id.login_input_email) EditText loginInputEmail;
+    @BindView(R.id.login_input_password) EditText loginInputPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
 
         auth = FirebaseAuth.getInstance();
-
-        loginInputLayoutEmail = (TextInputLayout) findViewById(R.id.login_input_layout_email);
-        loginInputLayoutPassword = (TextInputLayout) findViewById(R.id.login_input_layout_password);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
-        loginInputEmail = (EditText) findViewById(R.id.login_input_email);
-        loginInputPassword = (EditText) findViewById(R.id.login_input_password);
-
-        btnLogin = (Button) findViewById(R.id.btn_login);
-        btnLinkToSignUp = (Button) findViewById(R.id.btn_link_signup);
-
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                submitForm();
-            }
-        });
 
         btnLinkToSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +54,8 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void submitForm() {
+    @OnClick(R.id.btn_login)
+    public void submitForm() {
         String email = loginInputEmail.getText().toString().trim();
         String password = loginInputPassword.getText().toString().trim();
 

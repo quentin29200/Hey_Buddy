@@ -17,4 +17,6 @@
     <string name="bnt_signup">Sign up !!</string>
     <string name="btn_login">Log in</string>
     <string name="link_signup">Don\'t have an account, Signup !!</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_signup">Signup</string>
 </resources>

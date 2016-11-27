@@ -38,16 +38,11 @@ public class SignupActivity extends AppCompatActivity {
 
     @BindView(R.id.signup_input_layout_email) TextInputLayout signupInputLayoutEmail;
     @BindView(R.id.signup_input_layout_password) TextInputLayout signupInputLayoutPassword;
-    @BindView(R.id.progressBar)
-    ProgressBar progressBar;
-    @BindView(R.id.signup_input_password)
-    EditText signupInputPassword;
-    @BindView(R.id.signup_input_email)
-    EditText signupInputEmail;
-    @BindView(R.id.btn_link_login)
-    Button btnLinkToLogin;
-    @BindView(R.id.btn_signup)
-    Button btnSignup;
+    @BindView(R.id.progressBar) ProgressBar progressBar;
+    @BindView(R.id.signup_input_password) EditText signupInputPassword;
+    @BindView(R.id.signup_input_email) EditText signupInputEmail;
+    @BindView(R.id.btn_link_login) Button btnLinkToLogin;
+    @BindView(R.id.btn_signup) Button btnSignup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,31 +113,6 @@ public class SignupActivity extends AppCompatActivity {
                     }
                 });
         progressBar.setVisibility(View.GONE);
-
-//        final User user = new User(username, email);
-//
-//        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-//        ref.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                final  ValueEventListener listener = this;
-//
-//                if(!dataSnapshot.child(username).getKey().equals(username)){
-//
-//                }
-//                else{
-//                    signupInputLayoutUsername.setErrorEnabled(true);
-//                    signupInputLayoutUsername.setError("Cet username existe déjà");
-//                    requestFocus(signupInputUsername);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
     }
 
     private boolean checkUsername() {
@@ -171,7 +141,6 @@ public class SignupActivity extends AppCompatActivity {
     private boolean checkEmail() {
         String email = signupInputEmail.getText().toString().trim();
         if (email.isEmpty() || !isEmailValid(email)) {
-
             signupInputLayoutEmail.setErrorEnabled(true);
             signupInputLayoutEmail.setError("email non valide");
             signupInputEmail.setError("Ce champ est requis");

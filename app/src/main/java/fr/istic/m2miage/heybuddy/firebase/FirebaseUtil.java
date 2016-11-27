@@ -16,24 +16,25 @@ public class FirebaseUtil {
         if(firebaseUser != null){
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
             ref.child("users").child(firebaseUser.getUid()).setValue(user);
-//            addUserEmail(user);
-//            addUserUsername(user);
+            setUserUsername(user.getUsername());
         }
     }
 
-//    public static void addUserEmail(User user){
-//        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-//        if(user != null){
-//            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-//            ref.child("emails").child(user.getEmail()).setValue(firebaseUser.getUid());
-//        }
-//    }
-
-    public static void addUserUsername(User user){
+    public static String getUserUsername(){
+        String username = null;
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseUser != null){
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-            ref.child("usernames").child(user.getUsername()).setValue(firebaseUser.getUid());
+            username = ref.child("usernames").child(firebaseUser.getUid()).getKey();
+        }
+        return username;
+    }
+
+    public static void setUserUsername(String username){
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(firebaseUser != null){
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+            ref.child("usernames").child(firebaseUser.getUid()).setValue(username);
         }
     }
 
