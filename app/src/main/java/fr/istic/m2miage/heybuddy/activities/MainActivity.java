@@ -6,9 +6,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import fr.istic.m2miage.heybuddy.R;
 import fr.istic.m2miage.heybuddy.fragments.MapFragment;
 import fr.istic.m2miage.heybuddy.fragments.MenuFragment;
-import fr.istic.m2miage.heybuddy.R;
 
 public class MainActivity extends AppCompatActivity {
 
