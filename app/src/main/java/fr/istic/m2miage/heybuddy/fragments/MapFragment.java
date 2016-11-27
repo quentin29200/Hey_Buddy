@@ -1,19 +1,20 @@
-package fr.istic.m2miage.heybuddy.fragments;
+package com.example.quentin.heybuddy;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.Manifest;
+
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,16 +27,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import fr.istic.m2miage.heybuddy.R;
-import fr.istic.m2miage.heybuddy.firebase.FirebaseUtil;
-import fr.istic.m2miage.heybuddy.firebase.User;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
-    private static long MIN_TIME_UPDATE = 30000;
+    private GoogleMap googleMap;
+    private MapView mapView;
+    private static long MIN_TIME_UPDATE = 60000;
     private static long MIN_DISTANCE_UPDATES = 150;
     final private static int ALLOW_APP_GPS = 0;
 
@@ -55,8 +52,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         LinearLayout llLayout = (LinearLayout) inflater.inflate(R.layout.activity_maps, container, false);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        // SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        // mapFragment.getMapAsync(this);
+
+        try {
+            View v = getView();
+            mapView = (MapView) v.findViewById(R.id.map);
+            mapView.onCreate(savedInstanceState);
+            mapView.onResume();
+            mapView.getMapAsync(this);
+        } catch (NullPointerException npe) {
+            Log.e("ERROR", npe.getMessage());
+        }
 
         // Must return the root layer
         return llLayout;
@@ -147,7 +154,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     FirebaseUtil.setUserPosition(currentPosition.toString());
                 }
             });
-            mMap.setMyLocationEnabled(true);
+            this.googleMap.setMyLocationEnabled(true);
         } catch (Exception ex) {
             Log.i("MapsFragment", "Error creating location service: " + ex.getMessage());
         }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="fr.istic.m2miage.heybuddy">
+    package="com.example.quentin.heybuddy">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -38,7 +38,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.LoginActivity"/>
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_maps">
+        </activity>
     </application>
 
 </manifest>
