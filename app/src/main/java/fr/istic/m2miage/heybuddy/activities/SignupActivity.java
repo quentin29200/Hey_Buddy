@@ -72,7 +72,7 @@ public class SignupActivity extends AppCompatActivity {
                 if(user != null){
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-//                    startActivity(new Intent(SignupActivity.this, MapsActivity.class));
+//                    startActivity(new Intent(SignupActivity.this, MainActivity.class));
 //                    finish();
                 } else {
                     // User is signed out
@@ -111,7 +111,7 @@ public class SignupActivity extends AppCompatActivity {
                         } else {
                             User user = new User(email, email);
                             FirebaseUtil.addUser(user);
-                            startActivity(new Intent(SignupActivity.this, MapsActivity.class));
+                            startActivity(new Intent(SignupActivity.this, MainActivity.class));
                             finish();
                             Toast.makeText(getApplicationContext(), "You are successfully Registered !!", Toast.LENGTH_SHORT).show();
                         }

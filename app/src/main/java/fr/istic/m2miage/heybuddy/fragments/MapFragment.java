@@ -28,11 +28,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 import fr.istic.m2miage.heybuddy.R;
+import fr.istic.m2miage.heybuddy.firebase.FirebaseUtil;
+import fr.istic.m2miage.heybuddy.firebase.User;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private static long MIN_TIME_UPDATE = 60000;
+    private static long MIN_TIME_UPDATE = 30000;
     private static long MIN_DISTANCE_UPDATES = 150;
     final private static int ALLOW_APP_GPS = 0;
 
@@ -97,7 +99,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
             if (!isGPSEnabled) {
-                Log.e("MapsActivity", "GPS pas activé" );
+                Log.e("MapsFragment", "GPS pas activé" );
                 // cannot get location
                 AlertDialog.Builder dialog = new AlertDialog.Builder(super.getActivity());
                 dialog.setMessage(R.string.pls_accept_GPS);
@@ -137,13 +139,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 public void onLocationChanged(Location location) {
                     LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
+                    // Zoom to the current position
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
                     mMap.moveCamera(CameraUpdateFactory.zoomBy(13));
+                    // Send position to Firebase
+                    FirebaseUtil.setUserPosition(currentPosition.toString());
                 }
             });
             mMap.setMyLocationEnabled(true);
         } catch (Exception ex) {
-            Log.i("MapsActivity", "Error creating location service: " + ex.getMessage());
+            Log.i("MapsFragment", "Error creating location service: " + ex.getMessage());
         }
     }
 
@@ -161,11 +166,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             case ALLOW_APP_GPS: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("MapsActivity", "GPS autorisé" );
+                    Log.e("MapsFragment", "GPS autorisé" );
                 } else {
-                    Log.e("MapsActivity", "GPS pas autorisé" );
+                    Log.e("MapsFragment", "GPS pas autorisé" );
                 }
             }
         }
+    }
+
+    /**
+     * @param u - {User} User to show on the map
+     */
+    public void showFriendOnMap(@NonNull User u) {
+        //TODO
     }
 }
