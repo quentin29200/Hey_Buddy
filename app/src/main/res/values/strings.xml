@@ -10,4 +10,11 @@
     <string name="pls_accept_GPS">Veuillez activer votre GPS</string>
     <string name="run_GPS">Lancer GPS</string>
     <string name="cancel">Annuler</string>
+
+    <!-- Login & Signup strings -->
+    <string name="hint_email">Email</string>
+    <string name="hint_password">password</string>
+    <string name="bnt_signup">Sign up !!</string>
+    <string name="btn_login">Log in</string>
+    <string name="link_signup">Don\'t have an account, Signup !!</string>
 </resources>
