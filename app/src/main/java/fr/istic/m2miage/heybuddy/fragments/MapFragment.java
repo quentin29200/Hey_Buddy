@@ -26,6 +26,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import fr.istic.m2miage.heybuddy.R;
 import fr.istic.m2miage.heybuddy.firebase.FirebaseUtil;
@@ -178,6 +179,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
      * @param u - {User} User to show on the map
      */
     public void showFriendOnMap(@NonNull User u) {
-        //TODO
+        String username = u.getUsername();
+        mMap.addMarker(new MarkerOptions()
+        .position(new LatLng(10, 10))
+                .title(username));
     }
 }
