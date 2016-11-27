@@ -6,27 +6,27 @@ package fr.istic.m2miage.heybuddy.firebase;
 
 public class Position {
 
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
 
-    public Position(float latitude, float longitude) {
+    public Position(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 }

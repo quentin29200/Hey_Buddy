@@ -80,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, "Authentication error, Please enter a valid email and password or sign up", Toast.LENGTH_LONG).show();
 
                         } else {
+//                            FirebaseUtil.setUserPosition(50.216842,47.35909);
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();

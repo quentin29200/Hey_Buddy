@@ -38,7 +38,7 @@ public class FirebaseUtil {
         }
     }
 
-    public static void setUserPosition(float latitude, float longitude){
+    public static void setUserPosition(double latitude, double longitude){
         Position position = new Position(latitude, longitude);
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseUser != null){
