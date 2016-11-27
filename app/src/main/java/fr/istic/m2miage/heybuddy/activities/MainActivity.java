@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.main_small);
 
         // Log
         Log.v(TAG, "Initialization processing ...");
@@ -53,13 +53,23 @@ public class MainActivity extends AppCompatActivity {
         // Casual smartphone configuration
         else
         {
+            /**
+             * Check the example here
+             * http://stackoverflow.com/questions/26300674/android-fragment-overlay-another-fragment-with-semi-transparent
+             */
+
             // Log
             Log.v(TAG, "Smartphone configuration detected!");
 
-            // BACKGROUND - The Google Map
+            // BACKGROUND - Get the map as a fragment
             MapFragment map = new MapFragment();
 
-            // TODO Finish this part
+            // FOREGROUND - Get the menu as a fragment
+            MenuFragment menu = new MenuFragment();
+
+            // Add the fragment to the container
+            fragmentTransaction.add(R.id.fragmentLayoutBackground, map);
+            fragmentTransaction.add(R.id.fragmentLayoutForeground, menu);
         }
 
         // Confirm the transaction
