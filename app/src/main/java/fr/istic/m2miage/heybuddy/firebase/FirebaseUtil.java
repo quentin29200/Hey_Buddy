@@ -38,11 +38,21 @@ public class FirebaseUtil {
         }
     }
 
-    public static void setUserPosition(String position){
+    public static void setUserPosition(float latitude, float longitude){
+        Position position = new Position(latitude, longitude);
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseUser != null){
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
             ref.child("positions").child(firebaseUser.getUid()).setValue(position);
         }
+    }
+
+    /**
+     * Permet de récupérer la position d'un utilisateur
+     * @param uid identifiant de l'utilisateur concerné
+     * @return L'objet position associé
+     */
+    public static Position getUserPosition(String uid){
+        return null;
     }
 }
