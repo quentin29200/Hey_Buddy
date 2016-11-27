@@ -55,15 +55,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         // Initialization of the root layer
-        LinearLayout llLayout = (LinearLayout) inflater.inflate(R.layout.activity_maps, container, false);
+        MapView mapView = (MapView) inflater.inflate(R.layout.activity_maps, container, false);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         // SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         // mapFragment.getMapAsync(this);
 
         try {
-            View v = getView();
-            mapView = (MapView) v.findViewById(R.id.map);
+            //View v = getView();
+            //mapView = (MapView) v.findViewById(R.id.map);
             mapView.onCreate(savedInstanceState);
             mapView.onResume();
             mapView.getMapAsync(this);
@@ -71,8 +71,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Log.e("ERROR", npe.getMessage());
         }
 
-        // Must return the root layer
-        return llLayout;
+        // Must return the root layer*/
+        return mapView;
     }
 
 
@@ -152,6 +152,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 @Override
                 public void onLocationChanged(Location location) {
+                    Log.i("MapsFragment", "Update Location user : " + FirebaseUtil.getUserUsername() );
                     LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
                     // Zoom to the current position
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
@@ -160,9 +161,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     FirebaseUtil.setUserPosition(currentPosition.latitude, currentPosition.longitude);
                 }
             });
+            Log.i("MapsFragment", "Send first Location user : " + FirebaseUtil.getUserUsername() );
             this.googleMap.setMyLocationEnabled(true);
         } catch (Exception ex) {
-            Log.i("MapsFragment", "Error creating location service: " + ex.getMessage());
+            Log.e("MapsFragment", "Error creating location service: " + ex.getMessage());
         }
     }
 

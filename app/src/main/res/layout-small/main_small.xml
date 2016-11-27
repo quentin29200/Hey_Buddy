@@ -4,7 +4,7 @@ android:orientation="horizontal"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:baselineAligned="false"
-android:id="@+id/layoutTablet">
+android:id="@+id/layoutSmartphone">
 <FrameLayout
     android:id="@+id/fragmentLayoutBackground"
     android:layout_height="fill_parent"

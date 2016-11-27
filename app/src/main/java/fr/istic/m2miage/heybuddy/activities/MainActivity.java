@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             MapFragment map = new MapFragment();
 
             // Add the fragment to the container
-            fragmentTransaction.add(R.id.fragmentLayoutLeft, menu);
+            //fragmentTransaction.add(R.id.fragmentLayoutLeft, menu);
             fragmentTransaction.add(R.id.fragmentLayoutRight, map);
 
         }
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Add the fragment to the container
             fragmentTransaction.add(R.id.fragmentLayoutBackground, map);
-            fragmentTransaction.add(R.id.fragmentLayoutForeground, menu);
+            //fragmentTransaction.add(R.id.fragmentLayoutForeground, menu);
         }
 
         // Confirm the transaction
