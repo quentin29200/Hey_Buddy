@@ -1,4 +1,4 @@
-package com.example.quentin.heybuddy;
+package fr.istic.m2miage.heybuddy.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -24,13 +24,19 @@ import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import fr.istic.m2miage.heybuddy.R;
+import fr.istic.m2miage.heybuddy.firebase.FirebaseUtil;
+import fr.istic.m2miage.heybuddy.firebase.User;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
-    private GoogleMap googleMap;
+    protected GoogleMap googleMap;
     private MapView mapView;
     private static long MIN_TIME_UPDATE = 60000;
     private static long MIN_DISTANCE_UPDATES = 150;
@@ -85,8 +91,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
      * @param googleMap - {GoogleMap} A non-null instance of a GoogleMap associated with the MapFragment or MapView that defines the callback.
      */
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+    public void onMapReady(final GoogleMap googleMap) {
+        this.googleMap = googleMap;
 
         try {
             LocationManager locationManager = (LocationManager) super.getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -148,8 +154,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 public void onLocationChanged(Location location) {
                     LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
                     // Zoom to the current position
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
-                    mMap.moveCamera(CameraUpdateFactory.zoomBy(13));
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
+                    googleMap.moveCamera(CameraUpdateFactory.zoomBy(13));
                     // Send position to Firebase
                     FirebaseUtil.setUserPosition(currentPosition.toString());
                 }
@@ -187,7 +193,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
      */
     public void showFriendOnMap(@NonNull User u) {
         String username = u.getUsername();
-        mMap.addMarker(new MarkerOptions()
+        googleMap.addMarker(new MarkerOptions()
         .position(new LatLng(10, 10))
                 .title(username));
     }

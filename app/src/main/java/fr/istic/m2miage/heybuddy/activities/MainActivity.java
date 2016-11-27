@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.main_small);
 
         // Log
         Log.v(TAG, "Initialization processing ...");
@@ -68,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
             MenuFragment menu = new MenuFragment();
 
             // Add the fragment to the container
-            fragmentTransaction.add(R.id.fragmentLayoutBackground, map).commit();
-            fragmentTransaction.add(R.id.fragmentLayoutForeground, menu).commit();
+            fragmentTransaction.add(R.id.fragmentLayoutBackground, map);
+            fragmentTransaction.add(R.id.fragmentLayoutForeground, menu);
         }
 
         // Confirm the transaction
