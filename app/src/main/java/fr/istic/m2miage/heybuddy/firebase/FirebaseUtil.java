@@ -6,11 +6,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 /**
- * Created by Florian on 25/11/2016.
+ * Classe utilitaire qui permet de manipuler la base de données Firebase
  */
-
 public class FirebaseUtil {
 
+    /**
+     * Ajoute un utilisateur dans la base
+     * @param user Objet correspondant à un utilisateur
+     */
     public static void addUser(User user){
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseUser != null){
@@ -20,16 +23,10 @@ public class FirebaseUtil {
         }
     }
 
-    public static String getUserUsername(){
-        String username = null;
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(firebaseUser != null){
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-            username = ref.child("usernames").child(firebaseUser.getUid()).getKey();
-        }
-        return username;
-    }
-
+    /**
+     * Change le nom d'un utilisateur
+     * @param username Le nouveau nom à affecter
+     */
     public static void setUserUsername(String username){
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseUser != null){
@@ -38,6 +35,11 @@ public class FirebaseUtil {
         }
     }
 
+    /**
+     * Modifie l'emplacement GPS de l'utisateur dans la base
+     * @param latitude Latitude de la position GPS
+     * @param longitude Longitude de la position GPS
+     */
     public static void setUserPosition(double latitude, double longitude){
         Position position = new Position(latitude, longitude);
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -48,11 +50,14 @@ public class FirebaseUtil {
     }
 
     /**
-     * Permet de récupérer la position d'un utilisateur
-     * @param uid identifiant de l'utilisateur concerné
-     * @return L'objet position associé
+     * Ajoute un utilisateur en tant qu'ami de l'utilisateur courant
+     * @param uid Identifiant de l'utilisateur à ajouter
      */
-    public static Position getUserPosition(String uid){
-        return null;
+    public static void addUserFriend(String uid){
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(firebaseUser != null){
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+            ref.child("friends").child(firebaseUser.getUid()).push().setValue(uid);
+        }
     }
 }

@@ -12,11 +12,12 @@
     <string name="cancel">Annuler</string>
 
     <!-- Login & Signup strings -->
+    <string name="title_activity_signup">Inscription</string>
+    <string name="title_activity_login">Connexion</string>
     <string name="hint_email">Email</string>
-    <string name="hint_password">password</string>
-    <string name="bnt_signup">Sign up !!</string>
-    <string name="btn_login">Log in</string>
-    <string name="link_signup">Don\'t have an account, Signup !!</string>
-    <string name="title_activity_login">Login</string>
-    <string name="title_activity_signup">Signup</string>
+    <string name="hint_password">Mot de passe</string>
+    <string name="bnt_signup">S\'inscrire</string>
+    <string name="btn_login">Se connecter</string>
+    <string name="link_signup">Vous n\'avez pas de compte ? Inscrivez-vous !</string>
+    <string name="btn_google_signup">S\'inscrire avec Google</string>
 </resources>
