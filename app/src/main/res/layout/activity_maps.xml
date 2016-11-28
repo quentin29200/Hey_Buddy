@@ -4,4 +4,4 @@
     android:id="@+id/map"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.quentin.heybuddy.MapsActivity" />
+    tools:context="fr.istic.m2miage.heybuddy.activities.MainActivity" />
