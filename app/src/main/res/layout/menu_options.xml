@@ -4,6 +4,6 @@
     android:layout_width="fill_parent" >
 
     <item
-        android:id="@+id/menu_reset"
+        android:id="@+id/menu_test"
         android:title="@string/test_string_to_remove"/>
 </menu>

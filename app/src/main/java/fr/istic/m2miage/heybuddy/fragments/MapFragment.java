@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -23,15 +24,20 @@ import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import fr.istic.m2miage.heybuddy.R;
+import fr.istic.m2miage.heybuddy.firebase.FirebaseUtil;
+import fr.istic.m2miage.heybuddy.firebase.User;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
+    protected GoogleMap googleMap;
+    private MapView mapView;
+    private User friendToShow;
     private static long MIN_TIME_UPDATE = 60000;
     private static long MIN_DISTANCE_UPDATES = 150;
     final private static int ALLOW_APP_GPS = 0;
@@ -49,14 +55,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         // Initialization of the root layer
-        LinearLayout llLayout = (LinearLayout) inflater.inflate(R.layout.activity_maps, container, false);
+        MapView mapView = (MapView) inflater.inflate(R.layout.activity_maps, container, false);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        // SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        // mapFragment.getMapAsync(this);
 
-        // Must return the root layer
-        return llLayout;
+        try {
+            //View v = getView();
+            //mapView = (MapView) v.findViewById(R.id.map);
+            mapView.onCreate(savedInstanceState);
+            mapView.onResume();
+            mapView.getMapAsync(this);
+        } catch (NullPointerException npe) {
+            Log.e("ERROR", npe.getMessage());
+        }
+
+        // Must return the root layer*/
+        return mapView;
     }
 
 
@@ -75,8 +91,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
      * @param googleMap - {GoogleMap} A non-null instance of a GoogleMap associated with the MapFragment or MapView that defines the callback.
      */
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+    public void onMapReady(final GoogleMap googleMap) {
+        this.googleMap = googleMap;
 
         try {
             LocationManager locationManager = (LocationManager) super.getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -97,7 +113,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
             if (!isGPSEnabled) {
-                Log.e("MapsActivity", "GPS pas activé" );
+                Log.e("MapsFragment", "GPS pas activé" );
                 // cannot get location
                 AlertDialog.Builder dialog = new AlertDialog.Builder(super.getActivity());
                 dialog.setMessage(R.string.pls_accept_GPS);
@@ -136,14 +152,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 @Override
                 public void onLocationChanged(Location location) {
+                    Log.i("MapsFragment", "Update Location user : " + FirebaseUtil.getUserUsername() );
                     LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
-                    mMap.moveCamera(CameraUpdateFactory.zoomBy(13));
+                    // Zoom to the current position
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
+                    googleMap.moveCamera(CameraUpdateFactory.zoomBy(13));
+                    // Send position to Firebase
+                    FirebaseUtil.setUserPosition(currentPosition.latitude, currentPosition.longitude);
                 }
             });
-            mMap.setMyLocationEnabled(true);
+            Log.i("MapsFragment", "Send first Location user : " + FirebaseUtil.getUserUsername() );
+            this.googleMap.setMyLocationEnabled(true);
         } catch (Exception ex) {
-            Log.i("MapsActivity", "Error creating location service: " + ex.getMessage());
+            Log.e("MapsFragment", "Error creating location service: " + ex.getMessage());
         }
     }
 
@@ -161,11 +182,43 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             case ALLOW_APP_GPS: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("MapsActivity", "GPS autorisé" );
+                    Log.e("MapsFragment", "GPS autorisé" );
                 } else {
-                    Log.e("MapsActivity", "GPS pas autorisé" );
+                    Log.e("MapsFragment", "GPS pas autorisé" );
                 }
             }
         }
+    }
+
+    /**
+     * @param u - {User} User to show on the map
+     */
+    public void showFriendOnMap(@NonNull User u) {
+        friendToShow = u;
+        myHandler = new Handler();
+        myHandler.postDelayed(myRunnable,30000);
+    }
+
+    // Show friend's position every 30 sec
+    private Handler myHandler;
+    private Runnable myRunnable = new Runnable() {
+        @Override
+        public void run() {
+            int lat = 0; // User.getLat();
+            int lng = 0; // User.getLng();
+
+            googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(10, 10))
+                    .title(friendToShow.getUsername()));
+
+            myHandler.postDelayed(this,30000);
+        }
+    };
+
+    public void onPause() {
+        super.onPause();
+        // Stop callback
+        if(myHandler != null)
+            myHandler.removeCallbacks(myRunnable);
     }
 }
