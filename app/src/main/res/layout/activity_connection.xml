@@ -12,7 +12,7 @@
         android:id="@+id/hey_buddy_logo"
         android:layout_marginTop="10dp"
         android:layout_height="150dp"
-        android:contentDescription="Hey Buddy Logo"
+        android:contentDescription="HeyBuddy Logo"
         tools:ignore="HardcodedText" />
 
     <Button
