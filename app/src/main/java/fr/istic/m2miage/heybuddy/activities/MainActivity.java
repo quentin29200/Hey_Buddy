@@ -1,82 +1,127 @@
 package fr.istic.m2miage.heybuddy.activities;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.MenuItem;
+import android.support.v7.widget.Toolbar;
 
 import fr.istic.m2miage.heybuddy.R;
 import fr.istic.m2miage.heybuddy.fragments.MapFragment;
-import fr.istic.m2miage.heybuddy.fragments.MenuFragment;
 
+/**
+ * Done with the tutorial
+ * https://github.com/codepath/android_guides/wiki/Fragment-navigation-drawer
+ */
 public class MainActivity extends AppCompatActivity {
+    private DrawerLayout mDrawer;
+    private Toolbar toolbar;
+    private NavigationView nvDrawer;
 
-    /** TAG for logs, corresponding to the Activity name */
-    private static final String TAG = "MainActivity";
+    // Make sure to be using android.support.v7.app.ActionBarDrawerToggle version.
+    // The android.support.v4.app.ActionBarDrawerToggle has been deprecated.
+    private ActionBarDrawerToggle drawerToggle;
 
-    /**
-     * Check the documentation here
-     * https://developer.android.com/reference/android/app/Activity.html#onCreate(android.os.Bundle)
-     *
-     * @param savedInstanceState - {Bundle} If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_small);
+        setContentView(R.layout.activity_main);
 
-        // Log
-        Log.v(TAG, "Initialization processing ...");
+        // Set a Toolbar to replace the ActionBar.
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        // Get the FragmentManager to proceed to the transaction
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        // Find our drawer view
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerToggle = setupDrawerToggle();
 
-        // Tablet configuration
-        if (findViewById(R.id.layoutTablet) != null)
-        {
-            // Log
-            Log.v(TAG, "Tablet configuration detected!");
+        // Tie DrawerLayout events to the ActionBarToggle
+        mDrawer.addDrawerListener(drawerToggle);
 
-            // LEFT SIDE - Get the menu as a fragment
-            MenuFragment menu = new MenuFragment();
-
-            // RIGHT SIDE - Get the map as a fragment
-            MapFragment map = new MapFragment();
-
-            // Add the fragment to the container
-            //fragmentTransaction.add(R.id.fragmentLayoutLeft, menu);
-            fragmentTransaction.add(R.id.fragmentLayoutRight, map);
-
-        }
-        // Casual smartphone configuration
-        else
-        {
-            /**
-             * Check the example here
-             * http://stackoverflow.com/questions/26300674/android-fragment-overlay-another-fragment-with-semi-transparent
-             */
-
-            // Log
-            Log.v(TAG, "Smartphone configuration detected!");
-
-            // BACKGROUND - Get the map as a fragment
-            MapFragment map = new MapFragment();
-
-            // FOREGROUND - Get the menu as a fragment
-            MenuFragment menu = new MenuFragment();
-
-            // Add the fragment to the container
-            fragmentTransaction.add(R.id.fragmentLayoutBackground, map);
-            //fragmentTransaction.add(R.id.fragmentLayoutForeground, menu);
-        }
-
-        // Confirm the transaction
-        fragmentTransaction.commit();
-
-        // Log
-        Log.v(TAG, "Process initialized successfully!");
+        // Find our drawer view
+        nvDrawer = (NavigationView) findViewById(R.id.nvView);
+        // Setup drawer view
+        setupDrawerContent(nvDrawer);
     }
 
+    private ActionBarDrawerToggle setupDrawerToggle() {
+        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
+        // and will not render the hamburger icon without it.
+        return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
+    }
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                        selectDrawerItem(menuItem);
+                        return true;
+                    }
+                });
+    }
+
+    public void selectDrawerItem(MenuItem menuItem) {
+        // Create a new fragment and specify the fragment to show based on nav item clicked
+        Fragment fragment = null;
+        Class fragmentClass;
+        switch(menuItem.getItemId()) {
+            case R.id.nav_first_fragment:
+                fragmentClass = MapFragment.class;
+                break;
+            case R.id.nav_second_fragment:
+                fragmentClass = MapFragment.class;
+                break;
+            case R.id.nav_third_fragment:
+                fragmentClass = MapFragment.class;
+                break;
+            default:
+                fragmentClass = MapFragment.class;
+        }
+
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+
+        // Highlight the selected item has been done by NavigationView
+        menuItem.setChecked(true);
+        // Set action bar title
+        setTitle(menuItem.getTitle());
+        // Close the navigation drawer
+        mDrawer.closeDrawers();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggles
+        drawerToggle.onConfigurationChanged(newConfig);
+    }
 }

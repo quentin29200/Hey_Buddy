@@ -20,4 +20,8 @@
     <string name="btn_login">Se connecter</string>
     <string name="link_signup">Vous n\'avez pas de compte ? Inscrivez-vous !</string>
     <string name="btn_google_signup">S\'inscrire avec Google</string>
+
+    <!-- Navigation -->
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 </resources>
