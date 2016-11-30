@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -152,7 +151,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 @Override
                 public void onLocationChanged(Location location) {
-                    Log.i("MapsFragment", "Update Location user : " + FirebaseUtil.getUserUsername() );
+                    Log.i("MapsFragment", "Update Location user : " + FirebaseUtil.getUserEmail() );
                     LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
                     // Zoom to the current position
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
@@ -161,7 +160,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     FirebaseUtil.setUserPosition(currentPosition.latitude, currentPosition.longitude);
                 }
             });
-            Log.i("MapsFragment", "Send first Location user : " + FirebaseUtil.getUserUsername() );
+            Log.i("MapsFragment", "Send first Location user : " + FirebaseUtil.getUserEmail() );
             this.googleMap.setMyLocationEnabled(true);
         } catch (Exception ex) {
             Log.e("MapsFragment", "Error creating location service: " + ex.getMessage());
