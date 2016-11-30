@@ -35,6 +35,11 @@ public class FirebaseUtil {
         }
     }
 
+    public static String getUserEmail(){
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        return firebaseUser.getEmail();
+    }
+
     /**
      * Modifie l'emplacement GPS de l'utisateur dans la base
      * @param latitude Latitude de la position GPS

@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "379675446161",
-    "firebase_url": "https://heybuddy-a67da.firebaseio.com",
-    "project_id": "heybuddy-a67da",
-    "storage_bucket": "heybuddy-a67da.appspot.com"
+    "project_number": "1000335333670",
+    "firebase_url": "https://hey-buddy-e3fa0.firebaseio.com",
+    "project_id": "hey-buddy-e3fa0",
+    "storage_bucket": "hey-buddy-e3fa0.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:379675446161:android:2ca3db5528bd1dcf",
+        "mobilesdk_app_id": "1:1000335333670:android:2ca3db5528bd1dcf",
         "android_client_info": {
           "package_name": "fr.istic.m2miage.heybuddy"
         }
       },
       "oauth_client": [
         {
-          "client_id": "379675446161-oeuhc0ifabblagii6qs9rsi1jpd18hrr.apps.googleusercontent.com",
+          "client_id": "1000335333670-q63f9r03sd9imm750moev88e2e3vmqe0.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCOMI3zIp8u4f6VJJcOLbAcGfr-VguM8pA"
+          "current_key": "AIzaSyBiSmkv8-4SzKvOEOnbzvzOUhVS8ZePs_s"
         }
       ],
       "services": {

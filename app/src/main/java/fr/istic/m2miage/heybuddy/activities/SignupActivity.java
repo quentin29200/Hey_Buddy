@@ -101,13 +101,14 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
             if (v instanceof TextView) {
                 TextView tv = (TextView) v;
                 tv.setText(R.string.btn_google_signup);
-                return;
+                break;
             }
         }
 
         btnLinkToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d(TAG, "clic button");
                 Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
@@ -269,7 +270,7 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
                         } else {
                             User user = new User(acct.getEmail(), acct.getEmail());
                             FirebaseUtil.addUser(user);
-//                            startActivity(new Intent(SignupActivity.this, MainActivity.class));
+                            startActivity(new Intent(SignupActivity.this, MainActivity.class));
                             finish();
                             Toast.makeText(getApplicationContext(), "Inscription réussie", Toast.LENGTH_SHORT).show();
                         }
