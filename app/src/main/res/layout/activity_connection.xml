@@ -1,0 +1,75 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:background="@mipmap/connection_background">
+
+    <ImageView
+        android:layout_width="match_parent"
+        app:srcCompat="@mipmap/ic_launcher"
+        android:id="@+id/hey_buddy_logo"
+        android:layout_marginTop="10dp"
+        android:layout_height="150dp"
+        android:contentDescription="Hey Buddy Logo"
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:text="@string/subscribe_fr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_subscribe"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentLeft="false"
+        tools:ignore="RtlHardcoded"
+        android:theme="@android:style/Widget.Material.Button"
+        android:textColor="@color/heybuddy_blue_text"
+        tools:targetApi="lollipop"
+        android:layout_alignParentRight="false" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_connection"
+        tools:ignore="HardcodedText"
+        android:layout_above="@+id/btn_subscribe"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:theme="@android:style/Widget.Material.Button"
+        android:text="@string/str_connection_fr"
+        android:textStyle="normal|bold"
+        android:textColor="@color/heybuddy_blue_text"
+        tools:targetApi="lollipop" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/txt_password"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="17dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/username_fr"
+            android:id="@+id/txt_id" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_password"
+        android:layout_above="@+id/btn_connection"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="99dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password_fr" />
+    </android.support.design.widget.TextInputLayout>
+
+</RelativeLayout>

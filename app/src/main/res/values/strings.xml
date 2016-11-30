@@ -3,6 +3,13 @@
     <string name="app_name">HeyBuddy</string>
     <string name="title_activity_maps">Map</string>
 
+
+    <!-- ConnectionActivity strings -->
+    <string name="str_connection_fr">Connexion</string>
+    <string name="password_fr">Mot de passe</string>
+    <string name="username_fr">Identifiant</string>
+    <string name="subscribe_fr">Inscription</string>
+
     <!-- Menu strings -->
     <string name="test_string_to_remove">Toto</string>
 
@@ -10,4 +17,7 @@
     <string name="pls_accept_GPS">Veuillez activer votre GPS</string>
     <string name="run_GPS">Lancer GPS</string>
     <string name="cancel">Annuler</string>
+    <string name="title_activity_connection">ConnectionActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
