@@ -213,7 +213,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Double lon = pos.getLongitude();
                 Log.d("User latitude", lat+"");
                 Log.d("User longitude", lon+"");
-                
+
                 friend = new MarkerOptions()
                         .position(new LatLng(lat, lon))
                         .title("toto");
