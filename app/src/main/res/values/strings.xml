@@ -4,7 +4,8 @@
     <string name="title_activity_maps">Map</string>
 
     <!-- Menu strings -->
-    <string name="test_string_to_remove">Toto</string>
+    <string name="menu_item_1">Menu item 1</string>
+    <string name="menu_item_2">Menu item 2</string>
 
     <!-- Map strings -->
     <string name="pls_accept_GPS">Veuillez activer votre GPS</string>
@@ -22,6 +23,6 @@
     <string name="btn_google_signup">Se connecter avec Google</string>
 
     <!-- Navigation -->
-    <string name="drawer_open">Open navigation drawer</string>
-    <string name="drawer_close">Close navigation drawer</string>
+    <string name="drawer_open">Ouvrir le menu</string>
+    <string name="drawer_close">Fermer le menu</string>
 </resources>

@@ -4,14 +4,10 @@
         <item
             android:id="@+id/nav_first_fragment"
             android:icon="@drawable/ic_launcher"
-            android:title="First" />
+            android:title="@string/menu_item_1" />
         <item
             android:id="@+id/nav_second_fragment"
             android:icon="@drawable/ic_launcher"
-            android:title="Second" />
-        <item
-            android:id="@+id/nav_third_fragment"
-            android:icon="@drawable/ic_launcher"
-            android:title="Third" />
+            android:title="@string/menu_item_2" />
     </group>
 </menu>

@@ -48,6 +48,20 @@ public class MainActivity extends AppCompatActivity {
         nvDrawer = (NavigationView) findViewById(R.id.nvView);
         // Setup drawer view
         setupDrawerContent(nvDrawer);
+
+        // Add the MapFragment
+        Class fragmentClass;
+        fragmentClass = MapFragment.class;
+        Fragment fragment = null;
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
@@ -64,7 +78,8 @@ public class MainActivity extends AppCompatActivity {
                         selectDrawerItem(menuItem);
                         return true;
                     }
-                });
+                }
+        );
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
@@ -76,9 +91,6 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = MapFragment.class;
                 break;
             case R.id.nav_second_fragment:
-                fragmentClass = MapFragment.class;
-                break;
-            case R.id.nav_third_fragment:
                 fragmentClass = MapFragment.class;
                 break;
             default:
