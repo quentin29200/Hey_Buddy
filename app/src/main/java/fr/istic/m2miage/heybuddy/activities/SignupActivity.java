@@ -48,14 +48,14 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
 
-    @BindView(R.id.signup_input_layout_email) TextInputLayout signupInputLayoutEmail;
+    @BindView(R.id.signup_input_layout_email)    TextInputLayout signupInputLayoutEmail;
     @BindView(R.id.signup_input_layout_password) TextInputLayout signupInputLayoutPassword;
-    @BindView(R.id.progressBar) ProgressBar progressBar;
-    @BindView(R.id.signup_input_password) EditText signupInputPassword;
-    @BindView(R.id.signup_input_email) EditText signupInputEmail;
-    @BindView(R.id.btn_link_login) Button btnLinkToLogin;
-    @BindView(R.id.btn_signup) Button btnSignup;
-    @BindView(R.id.btn_google_signup) SignInButton btnGoogleSignup;
+    @BindView(R.id.progressBar)                  ProgressBar progressBar;
+    @BindView(R.id.signup_input_password)        EditText signupInputPassword;
+    @BindView(R.id.signup_input_email)           EditText signupInputEmail;
+    @BindView(R.id.btn_link_login)               Button btnLinkToLogin;
+    @BindView(R.id.btn_signup)                   Button btnSignup;
+    @BindView(R.id.btn_google_signup)            SignInButton btnGoogleSignup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
