@@ -27,9 +27,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DatabaseReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,9 +42,7 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
     private static final int RC_SIGN_IN = 9001;
 
     private GoogleApiClient mGoogleApiClient;
-    private DatabaseReference mDatabase;
     private FirebaseAuth auth;
-    private FirebaseAuth.AuthStateListener authListener;
 
     @BindView(R.id.signup_input_layout_email)    TextInputLayout signupInputLayoutEmail;
     @BindView(R.id.signup_input_layout_password) TextInputLayout signupInputLayoutPassword;
@@ -63,24 +59,10 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
 
+        // Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
-        authListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = auth.getCurrentUser();
-                if(user != null){
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-//                    startActivity(new Intent(SignupActivity.this, MainActivity.class));
-//                    finish();
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-            }
-        };
 
-        // Configure Google Sign In
+        // Configure Google SignIn
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -93,8 +75,8 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
+        // Customize google button
         btnGoogleSignup.setSize(SignInButton.SIZE_STANDARD);
-        // Find the TextView that is inside of the SignInButton and set its text
         for (int i = 0; i < btnGoogleSignup.getChildCount(); i++) {
             View v = btnGoogleSignup.getChildAt(i);
 
@@ -105,16 +87,17 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
             }
         }
 
+        // Redirection to login activity
         btnLinkToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "clic button");
                 Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
     }
 
+    // Validate button
     @OnClick(R.id.btn_signup)
     public void submitForm() {
         final String email = signupInputEmail.getText().toString().trim();
@@ -130,6 +113,7 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
         signupInputLayoutPassword.setErrorEnabled(false);
 
         progressBar.setVisibility(View.VISIBLE);
+        // Create user
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -144,21 +128,63 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
                         } else {
                             User user = new User(email, email);
                             FirebaseUtil.addUser(user);
+                            Toast.makeText(getApplicationContext(), "Inscription réussie", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(SignupActivity.this, MainActivity.class));
                             finish();
-                            Toast.makeText(getApplicationContext(), "Inscription réussie", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
-        progressBar.setVisibility(View.GONE);
     }
 
+    // Google button
     @OnClick(R.id.btn_google_signup)
     public void signUpGoogle(){
         progressBar.setVisibility(View.VISIBLE);
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                // Signed in successfully, show authenticated UI.
+                final GoogleSignInAccount acct = result.getSignInAccount();
+                AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+                auth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithCredential", task.getException());
+                            Toast.makeText(SignupActivity.this, "L'authentification a échoué",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            User user = new User(acct.getEmail(), acct.getEmail());
+                            FirebaseUtil.addUser(user);
+                            Toast.makeText(getApplicationContext(), "Inscription réussie", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(SignupActivity.this, MainActivity.class));
+                            finish();
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // An unresolvable error has occurred and Google APIs (including Sign-In) will not
+        // be available.
+        Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
 
     private boolean checkUsername() {
@@ -188,8 +214,8 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
         String email = signupInputEmail.getText().toString().trim();
         if (email.isEmpty() || !isEmailValid(email)) {
             signupInputLayoutEmail.setErrorEnabled(true);
-            signupInputLayoutEmail.setError("email non valide");
-            signupInputEmail.setError("Ce champ est requis");
+            signupInputLayoutEmail.setError("Email incorrect.");
+            signupInputEmail.setError("Obligatoire !!");
             requestFocus(signupInputEmail);
             return false;
         }
@@ -205,8 +231,8 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
         String password = signupInputPassword.getText().toString().trim();
         if (password.isEmpty() || !isPasswordValid(password)) {
 
-            signupInputLayoutPassword.setError("Mot de passe non valide");
-            signupInputPassword.setError("Ce champ est requis");
+            signupInputLayoutPassword.setError("Mot de passe incorrect.");
+            signupInputPassword.setError("Obligatoire !!");
             requestFocus(signupInputPassword);
             return false;
         }
@@ -225,65 +251,8 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        auth.addAuthStateListener(authListener);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if(authListener != null){
-            auth.removeAuthStateListener(authListener);
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if (result.isSuccess()) {
-                // Signed in successfully, show authenticated UI.
-                final GoogleSignInAccount acct = result.getSignInAccount();
-                AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-                auth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
-
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(SignupActivity.this, "L'authentification a échoué",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            User user = new User(acct.getEmail(), acct.getEmail());
-                            FirebaseUtil.addUser(user);
-                            startActivity(new Intent(SignupActivity.this, MainActivity.class));
-                            finish();
-                            Toast.makeText(getApplicationContext(), "Inscription réussie", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        // An unresolvable error has occurred and Google APIs (including Sign-In) will not
-        // be available.
-        Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
 }
