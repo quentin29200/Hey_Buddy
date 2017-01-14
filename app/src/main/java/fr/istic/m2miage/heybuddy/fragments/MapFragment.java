@@ -152,7 +152,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 @Override
                 public void onLocationChanged(Location location) {
-                    Log.i("MapsFragment", "Update Location user : " + FirebaseUtil.getUserUsername() );
+                    //Log.i("MapsFragment", "Update Location user : " + FirebaseUtil.getUserUsername() );
                     LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
                     // Zoom to the current position
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
@@ -161,7 +161,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     FirebaseUtil.setUserPosition(currentPosition.latitude, currentPosition.longitude);
                 }
             });
-            Log.i("MapsFragment", "Send first Location user : " + FirebaseUtil.getUserUsername() );
+            //Log.i("MapsFragment", "Send first Location user : " + FirebaseUtil.getUserUsername() );
             this.googleMap.setMyLocationEnabled(true);
         } catch (Exception ex) {
             Log.e("MapsFragment", "Error creating location service: " + ex.getMessage());
