@@ -9,7 +9,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import fr.istic.m2miage.heybuddy.R;
-import fr.istic.m2miage.heybuddy.adpater.ContactAdapter;
+import fr.istic.m2miage.heybuddy.adapter.ContactAdapter;
 
 public class ContactListActivity extends AppCompatActivity {
 

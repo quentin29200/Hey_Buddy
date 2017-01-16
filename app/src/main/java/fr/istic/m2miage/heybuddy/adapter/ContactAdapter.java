@@ -1,4 +1,4 @@
-package fr.istic.m2miage.heybuddy.adpater;
+package fr.istic.m2miage.heybuddy.adapter;
 
 import android.app.Activity;
 import android.content.ContentResolver;
