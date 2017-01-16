@@ -1,9 +1,0 @@
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="fill_parent"
-    android:layout_width="fill_parent" >
-
-    <item
-        android:id="@+id/menu_test"
-        android:title="@string/test_string_to_remove"/>
-</menu>

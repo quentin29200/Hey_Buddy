@@ -15,14 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "1000335333670-inab4t6jsqov9gs98m7b9mmf8tk79ern.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "fr.istic.m2miage.heybuddy",
-            "certificate_hash": "6176B5D5202457741F013D5595D09BEBC9FF4A4E"
-          }
-        },
-        {
           "client_id": "1000335333670-q63f9r03sd9imm750moev88e2e3vmqe0.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -37,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1000335333670-q63f9r03sd9imm750moev88e2e3vmqe0.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2
