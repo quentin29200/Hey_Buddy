@@ -3,6 +3,7 @@ package fr.istic.m2miage.heybuddy.firebase;
 import android.content.Intent;
 import android.util.Log;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -18,21 +19,33 @@ import fr.istic.m2miage.heybuddy.notification.NotificationsManager;
 
 public class MessagingService extends FirebaseMessagingService {
 
+    private final String SENDER_ID = "1000335333670";
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if(remoteMessage.getData().size() > 0) {
             Log.e("FMS", remoteMessage.getData().toString());
             try {
                 JSONObject json = new JSONObject(remoteMessage.getData().toString());
-                sendPushNotification(json);
+                showNotification(json);
             } catch (Exception e) {
                 Log.e("FMS", "Exception: " + e.getMessage());
             }
         }
     }
 
-    private void sendPushNotification(JSONObject json) {
+    private void sendMessage(String to, String title, String message) {
 
+        FirebaseMessaging fm = FirebaseMessaging.getInstance();
+
+        fm.send(new RemoteMessage.Builder(SENDER_ID + "@gcm.googleapis.com")
+                .addData("to", to)
+                .addData("title", title)
+                .addData("message",message)
+                .build());
+    }
+
+    private void showNotification(JSONObject json) {
         try {
             JSONObject data = json.getJSONObject("data");
 

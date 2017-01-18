@@ -214,29 +214,6 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
 
-    private boolean checkUsername() {
-//        String username = signupInputUsername.getText().toString().trim();
-//        if(username.isEmpty() || !isUsernameValid(username)){
-//            signupInputLayoutUsername.setErrorEnabled(true);
-//            signupInputLayoutUsername.setError("Username non valide");
-//            signupInputUsername.setError("Ce champ est requis");
-//            requestFocus(signupInputUsername);
-//            return false;
-//        }
-//        else if(isUsernameExisting(username)){
-//            signupInputLayoutUsername.setErrorEnabled(true);
-//            signupInputLayoutUsername.setError("Cet username existe déjà");
-//            requestFocus(signupInputUsername);
-//            return false;
-//        }
-//        signupInputLayoutUsername.setErrorEnabled(false);
-        return true;
-    }
-
-    private boolean isUsernameValid(String username) {
-        return username.length() >= 4;
-    }
-
     private boolean checkEmail() {
         String email = signupInputEmail.getText().toString().trim();
         if (email.isEmpty() || !isEmailValid(email)) {
@@ -286,15 +263,22 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
-        if (requestCode == PERMISSIONS_REQUEST_READ_PHONE_STATE) {
-            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
+        switch (requestCode){
+            case PERMISSIONS_REQUEST_READ_PHONE_STATE: {
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    // Do something
+                } else {
+                    Toast.makeText(this, "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
+                }
+                return;
             }
-        }
-
-        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
-            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Until you grant the permission, we cannot display the names", Toast.LENGTH_SHORT).show();
+            case PERMISSIONS_REQUEST_READ_CONTACTS: {
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    // Do something
+                } else {
+                    Toast.makeText(this, "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
+                }
+                return;
             }
         }
     }
