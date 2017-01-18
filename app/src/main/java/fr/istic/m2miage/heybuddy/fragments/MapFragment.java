@@ -235,23 +235,4 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
     }
-
-    // Show friend's position every 30 sec
-    private Handler myHandler;
-    private Runnable myRunnable = new Runnable() {
-        @Override
-        public void run() {
-            int lat = 0; // User.getLat();
-            int lng = 0; // User.getLng();
-
-            myHandler.postDelayed(this,30000);
-        }
-    };
-
-    public void onPause() {
-        super.onPause();
-        // Stop callback
-        if(myHandler != null)
-            myHandler.removeCallbacks(myRunnable);
-    }
 }
