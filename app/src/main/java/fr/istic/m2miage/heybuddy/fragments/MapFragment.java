@@ -35,10 +35,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
-import java.util.List;
 
 import fr.istic.m2miage.heybuddy.R;
-import fr.istic.m2miage.heybuddy.adapter.ContactAdapter;
 import fr.istic.m2miage.heybuddy.firebase.Contact;
 import fr.istic.m2miage.heybuddy.firebase.FirebaseUtil;
 import fr.istic.m2miage.heybuddy.firebase.Position;
@@ -69,13 +67,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         // Initialization of the root layer
         MapView mapView = (MapView) inflater.inflate(R.layout.activity_maps, container, false);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        // SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        // mapFragment.getMapAsync(this);
-
         try {
-            //View v = getView();
-            //mapView = (MapView) v.findViewById(R.id.map);
             mapView.onCreate(savedInstanceState);
             mapView.onResume();
             mapView.getMapAsync(this);
@@ -234,14 +226,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         .title(contact.getName());
                 friend = googleMap.addMarker(Location);
 
-
                 markers.put(friendUid, friend);
-
-                /*for (DataSnapshot child: dataSnapshot.getChildren()) {
-                    Double  child.getValue();
-                    Log.d("User key", p.getLatitude()+"");
-                   // String lat = (String) child.child("latitude").getValue();
-                }*/
             }
 
             @Override
@@ -249,22 +234,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             }
         });
-
-       /* ref.child("positions").equals(uid).addChildEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Position position = (Position) dataSnapshot.getValue();
-                System.out.println(position.toString());
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });*/
-
-
-
-        //myHandler = new Handler();
-        //myHandler.postDelayed(myRunnable,30000);
     }
 
     // Show friend's position every 30 sec
