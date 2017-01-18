@@ -171,7 +171,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
                     // Zoom to the current position
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
-                    googleMap.moveCamera(CameraUpdateFactory.zoomBy(8));
+                    googleMap.moveCamera(CameraUpdateFactory.zoomBy(15));
                     // Send position to Firebase
                     FirebaseUtil.setUserPosition(currentPosition.latitude, currentPosition.longitude);
                 }
@@ -213,7 +213,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void showMe() {
         // Zoom to the current position
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
-        googleMap.moveCamera(CameraUpdateFactory.zoomBy(8));
     }
 
     /**
@@ -222,6 +221,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void showFriendOnMap(@NonNull final Contact contact) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
+        // Action do first time
+        ref.child("positions").child(contact.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Position pos = dataSnapshot.getValue(Position.class);
+                LatLng friendPosition = new LatLng(pos.getLatitude(), pos.getLongitude());
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(friendPosition));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        // Add listener on change
         ref.child("positions").child(contact.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
