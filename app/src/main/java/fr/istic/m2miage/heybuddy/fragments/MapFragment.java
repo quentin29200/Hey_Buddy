@@ -25,6 +25,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -46,6 +48,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     protected GoogleMap googleMap;
     private MapView mapView;
     protected Marker friend;
+    private BitmapDescriptor icon;
     private static long MIN_TIME_UPDATE = 60000;
     private static long MIN_DISTANCE_UPDATES = 150;
     final private static int ALLOW_APP_GPS = 0;
@@ -75,8 +78,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Log.e("ERROR", npe.getMessage());
         }
 
-       // Initialize HashMap Markers
+        // Initialize HashMap Markers
         this.markers = new HashMap<>();
+
+        // Initialize Icon
+        this.icon = BitmapDescriptorFactory.fromResource(R.drawable.heybuddy_logo);
 
         // Must return the root layer*/
         return mapView;
@@ -223,7 +229,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 MarkerOptions Location = new MarkerOptions()
                         .position(new LatLng(lat, lon))
-                        .title(contact.getName());
+                        .title(contact.getName())
+                        .icon(icon);
                 friend = googleMap.addMarker(Location);
 
                 markers.put(friendUid, friend);
