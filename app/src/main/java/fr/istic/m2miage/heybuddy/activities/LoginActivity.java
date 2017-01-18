@@ -62,9 +62,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         // If user is already authentificated, launch main activity
         if(auth.getCurrentUser() != null){
-            Toast.makeText(getApplicationContext(), "Bonjour "+auth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            finish();
+            auth.signOut();
+//            Toast.makeText(getApplicationContext(), "Bonjour "+auth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
+//            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+//            finish();
         }
 
         // set the view now

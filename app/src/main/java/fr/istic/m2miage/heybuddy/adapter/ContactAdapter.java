@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,7 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.istic.m2miage.heybuddy.R;
+import fr.istic.m2miage.heybuddy.activities.MainActivity;
 import fr.istic.m2miage.heybuddy.firebase.User;
+import fr.istic.m2miage.heybuddy.fragments.MapFragment;
 
 /**
  * Created by mahdi on 01/12/16.
@@ -28,7 +31,8 @@ import fr.istic.m2miage.heybuddy.firebase.User;
 public class ContactAdapter extends BaseAdapter {
 
     private List<Contact> contactList;
-    private Activity activity;
+    private MainActivity activity;
+    private MapFragment mapFragment;
     private class Contact {
 
         private long id;
@@ -62,8 +66,9 @@ public class ContactAdapter extends BaseAdapter {
 
 
     public ContactAdapter(Activity activity) {
-        this.activity = activity;
+        this.activity = (MainActivity) activity;
         this.contactList = new ArrayList<>();
+        this.mapFragment = (MapFragment) this.activity.getSupportFragmentManager().findFragmentByTag("map");
         initPhoneContactList();
     }
 
@@ -84,11 +89,17 @@ public class ContactAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        final Contact contact = this.contactList.get(i);
         LayoutInflater inflater = (LayoutInflater) this.activity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View item =  inflater.inflate(R.layout.contact_list_item,null,false);
-
         TextView txtContactName   = (TextView) item.findViewById(R.id.txtContactName);
-        Contact contact = this.contactList.get(i);
+        ImageView imgShowFriend = (ImageView) item.findViewById(R.id.showThisFriend);
+        imgShowFriend.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // ICIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+                //mapFragment.showFriendOnMap(contact.getId());
+            }
+        });
         txtContactName.setText(contact.getName());
 
         return item;

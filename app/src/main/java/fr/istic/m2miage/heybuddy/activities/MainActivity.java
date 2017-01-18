@@ -53,6 +53,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment, "map").commit();
     }
 }
