@@ -67,18 +67,6 @@ public class FirebaseUtil {
     }
 
     /**
-     * Ajoute un utilisateur en tant qu'ami de l'utilisateur courant
-     * @param uid Identifiant de l'utilisateur à ajouter
-     */
-    public static void addUserFriend(String uid){
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(firebaseUser != null){
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-            ref.child("friends").child(firebaseUser.getUid()).push().setValue(uid);
-        }
-    }
-
-    /**
      * Ajout des contacts du répertoire qui sont inscrits sur HeyBuddy
      * @param activity L'activité qui appelle la méthode.
      */
