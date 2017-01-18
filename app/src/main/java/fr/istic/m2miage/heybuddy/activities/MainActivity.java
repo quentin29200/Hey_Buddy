@@ -1,6 +1,7 @@
 package fr.istic.m2miage.heybuddy.activities;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
     @BindView(R.id.lstPhoneContact) ListView mDrawerList;
+    @BindView(R.id.floatLocation) FloatingActionButton floatLocation;
     private ContactAdapter contactAdapter;
 
     @Override
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Add the MapFragment
-        Class fragmentClass = MapFragment.class;
+        final Class fragmentClass = MapFragment.class;
         Fragment fragment = null;
         try {
             fragment = (Fragment) fragmentClass.newInstance();
@@ -54,5 +56,13 @@ public class MainActivity extends AppCompatActivity {
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment, "map").commit();
+
+        this.floatLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("map");
+                mapFragment.showMe();
+            }
+        });
     }
 }
