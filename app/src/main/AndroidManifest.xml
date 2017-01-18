@@ -43,4 +43,18 @@
         <activity android:name=".activities.MainActivity" android:label="@string/app_name"/>
     </application>
 
+    <service
+        android:name=".FirebaseInstanceIdManager">
+        <intent-filter>
+            <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+        </intent-filter>
+    </service>
+
+    <service
+        android:name=".MessagingService">
+        <intent-filter>
+            <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+        </intent-filter>
+    </service>
+
 </manifest>
