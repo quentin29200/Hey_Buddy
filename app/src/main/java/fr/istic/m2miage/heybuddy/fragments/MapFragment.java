@@ -26,6 +26,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,7 +34,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.List;
+
 import fr.istic.m2miage.heybuddy.R;
+import fr.istic.m2miage.heybuddy.adapter.ContactAdapter;
+import fr.istic.m2miage.heybuddy.firebase.Contact;
 import fr.istic.m2miage.heybuddy.firebase.FirebaseUtil;
 import fr.istic.m2miage.heybuddy.firebase.Position;
 
@@ -41,10 +47,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     protected GoogleMap googleMap;
     private MapView mapView;
-    protected MarkerOptions  friend = new MarkerOptions();
+    protected Marker friend;
     private static long MIN_TIME_UPDATE = 60000;
     private static long MIN_DISTANCE_UPDATES = 150;
     final private static int ALLOW_APP_GPS = 0;
+    private HashMap<String, Marker> markers;
+
 
     /**
      * Check the documentation here
@@ -74,6 +82,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         } catch (NullPointerException npe) {
             Log.e("ERROR", npe.getMessage());
         }
+
+       // Initialize HashMap Markers
+        this.markers = new HashMap<>();
 
         // Must return the root layer*/
         return mapView;
@@ -195,26 +206,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     /**
-     * @param uid - {String} User to show on the map
+     * @param contact - {Contact} User to show on the map
      */
-    public void showFriendOnMap(@NonNull String uid) {
-        //friendToShow = u;
+    public void showFriendOnMap(@NonNull final Contact contact) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
-        ref.child("positions").child(uid).addValueEventListener(new ValueEventListener() {
+        ref.child("positions").child(contact.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Position pos = dataSnapshot.getValue(Position.class);
+                String friendUid = dataSnapshot.getKey();
+                Log.d("friend key", dataSnapshot.getKey());
+
                 Double lat = pos.getLatitude();
                 Double lon = pos.getLongitude();
                 Log.d("User latitude", lat+"");
                 Log.d("User longitude", lon+"");
 
-                friend = new MarkerOptions()
-                        .position(new LatLng(lat, lon))
-                        .title("toto");
+                if (markers.containsKey(friendUid)) {
+                    friend = markers.get(friendUid);
+                    friend.remove();
+                    markers.remove(friendUid);
+                }
 
-                googleMap.addMarker(friend);
+                MarkerOptions Location = new MarkerOptions()
+                        .position(new LatLng(lat, lon))
+                        .title(contact.getName());
+                friend = googleMap.addMarker(Location);
+
+
+                markers.put(friendUid, friend);
 
                 /*for (DataSnapshot child: dataSnapshot.getChildren()) {
                     Double  child.getValue();

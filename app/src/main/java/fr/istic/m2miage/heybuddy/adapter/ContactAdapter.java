@@ -1,6 +1,7 @@
 package fr.istic.m2miage.heybuddy.adapter;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import fr.istic.m2miage.heybuddy.R;
 import fr.istic.m2miage.heybuddy.activities.MainActivity;
+import fr.istic.m2miage.heybuddy.firebase.Contact;
 import fr.istic.m2miage.heybuddy.firebase.User;
 import fr.istic.m2miage.heybuddy.fragments.MapFragment;
 
@@ -32,52 +34,12 @@ public class ContactAdapter extends BaseAdapter {
 
     private List<Contact> contactList;
     private MainActivity activity;
-    private MapFragment mapFragment;
-    private class Contact {
-
-        private long id;
-        private String uid;
-        private String name;
-        private String image;
-
-        public long getId() {
-            return id;
-        }
-
-        public void setId(long id) {
-            this.id = id;
-        }
-
-        public String getUid() {
-            return uid;
-        }
-
-        public void setUid(String uid) {
-            this.uid = uid;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getImage() {
-            return image;
-        }
-
-        public void setImage(String image) {
-            this.image = image;
-        }
-    }
-
+    //private MapFragment mapFragment;
 
     public ContactAdapter(Activity activity) {
         this.activity = (MainActivity) activity;
         this.contactList = new ArrayList<>();
-        this.mapFragment = (MapFragment) this.activity.getSupportFragmentManager().findFragmentByTag("map");
+       // Log.i("MapFragment Contact", mapFragment.getClass().toString());
         initPhoneContactList();
     }
 
@@ -105,8 +67,8 @@ public class ContactAdapter extends BaseAdapter {
         ImageView imgShowFriend = (ImageView) item.findViewById(R.id.showThisFriend);
         imgShowFriend.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // ICIIIIIIIIIIIIIIIIIIIIIIIIIIIII
-                //mapFragment.showFriendOnMap(contact.getId());
+                MapFragment mapFragment = (MapFragment) activity.getSupportFragmentManager().findFragmentByTag("map");
+                mapFragment.showFriendOnMap(contact);
             }
         });
         txtContactName.setText(contact.getName());
