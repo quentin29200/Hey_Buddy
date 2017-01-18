@@ -1,10 +1,15 @@
 package fr.istic.m2miage.heybuddy.activities;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +45,8 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
 
     public static final String TAG = SignupActivity.class.getName();
     private static final int RC_SIGN_IN = 9001;
+    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+    private static final int PERMISSIONS_REQUEST_READ_PHONE_STATE = 101;
 
     private GoogleApiClient mGoogleApiClient;
     private FirebaseAuth auth;
@@ -95,6 +102,18 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
                 startActivity(intent);
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if(checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSIONS_REQUEST_READ_PHONE_STATE);
+                //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+            }
+
+            if(checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+                //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+            }
+        }
     }
 
     // Validate button
@@ -126,8 +145,16 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
                         if(!task.isSuccessful()){
                             Log.d(SignupActivity.class.getName(), "L'authentification a échoué : " + task.getException());
                         } else {
+                            // Ajout de l'utilisateur sur Firebase
+                            TelephonyManager tMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                            String mPhoneNumber = tMgr.getLine1Number();
                             User user = new User(email, email);
+                            user.setNumero(mPhoneNumber);
                             FirebaseUtil.addUser(user);
+
+                            // Recherche des contacts de l'utilisateur
+                            FirebaseUtil.addFriendsFromContacts(SignupActivity.this);
+
                             Toast.makeText(getApplicationContext(), "Inscription réussie", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(SignupActivity.this, MainActivity.class));
                             finish();
@@ -254,5 +281,21 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
     protected void onResume() {
         super.onResume();
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_READ_PHONE_STATE) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Until you grant the permission, we cannot display the names", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

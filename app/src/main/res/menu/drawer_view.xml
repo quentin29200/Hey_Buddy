@@ -9,5 +9,11 @@
             android:id="@+id/nav_second_fragment"
             android:icon="@drawable/ic_launcher"
             android:title="@string/menu_item_2" />
+        <item
+            android:id="@+id/menu_logout"
+            android:icon="@drawable/logout"
+            android:title="Se déconnecter" />
+
+
     </group>
 </menu>

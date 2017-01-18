@@ -27,16 +27,21 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import fr.istic.m2miage.heybuddy.R;
 import fr.istic.m2miage.heybuddy.firebase.FirebaseUtil;
-import fr.istic.m2miage.heybuddy.firebase.User;
+import fr.istic.m2miage.heybuddy.firebase.Position;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     protected GoogleMap googleMap;
     private MapView mapView;
-    private User friendToShow;
+    protected MarkerOptions  friend = new MarkerOptions();
     private static long MIN_TIME_UPDATE = 60000;
     private static long MIN_DISTANCE_UPDATES = 150;
     final private static int ALLOW_APP_GPS = 0;
@@ -190,12 +195,55 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     /**
-     * @param u - {User} User to show on the map
+     * @param uid - {String} User to show on the map
      */
-    public void showFriendOnMap(@NonNull User u) {
-        friendToShow = u;
-        myHandler = new Handler();
-        myHandler.postDelayed(myRunnable,30000);
+    public void showFriendOnMap(@NonNull String uid) {
+        //friendToShow = u;
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+        ref.child("positions").child(uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Position pos = dataSnapshot.getValue(Position.class);
+                Double lat = pos.getLatitude();
+                Double lon = pos.getLongitude();
+                Log.d("User latitude", lat+"");
+                Log.d("User longitude", lon+"");
+
+                friend = new MarkerOptions()
+                        .position(new LatLng(lat, lon))
+                        .title("toto");
+
+                googleMap.addMarker(friend);
+
+                /*for (DataSnapshot child: dataSnapshot.getChildren()) {
+                    Double  child.getValue();
+                    Log.d("User key", p.getLatitude()+"");
+                   // String lat = (String) child.child("latitude").getValue();
+                }*/
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+       /* ref.child("positions").equals(uid).addChildEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Position position = (Position) dataSnapshot.getValue();
+                System.out.println(position.toString());
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });*/
+
+
+
+        //myHandler = new Handler();
+        //myHandler.postDelayed(myRunnable,30000);
     }
 
     // Show friend's position every 30 sec
@@ -205,10 +253,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         public void run() {
             int lat = 0; // User.getLat();
             int lng = 0; // User.getLng();
-
-            googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(10, 10))
-                    .title(friendToShow.getUsername()));
 
             myHandler.postDelayed(this,30000);
         }

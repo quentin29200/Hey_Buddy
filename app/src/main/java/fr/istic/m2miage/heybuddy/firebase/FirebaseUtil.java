@@ -1,5 +1,11 @@
 package fr.istic.m2miage.heybuddy.firebase;
 
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.provider.ContactsContract;
+import android.telephony.PhoneNumberUtils;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -69,6 +75,76 @@ public class FirebaseUtil {
         if(firebaseUser != null){
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
             ref.child("friends").child(firebaseUser.getUid()).push().setValue(uid);
+        }
+    }
+
+    /**
+     * Ajout des contacts du répertoire qui sont inscrits sur HeyBuddy
+     * @param activity L'activité qui appelle la méthode.
+     */
+    public static void addFriendsFromContacts(Activity activity){
+        ContentResolver contentResolver = activity.getContentResolver();
+        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+
+        class Contact{
+            private long id;
+            private String name;
+            private String lastName;
+            private String image;
+            private String numero;
+        }
+
+        if(cursor.getCount() > 0) {
+            while(cursor.moveToNext()) {
+
+                // GET CONTACT DATA
+                final Contact newContact = new Contact();
+                newContact.id = cursor.getLong(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                newContact.name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                newContact.lastName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                if(cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_ID)) > 0) {
+                    newContact.image = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
+                }
+                else {
+                    newContact.image = "";
+                }
+
+                int hasPhoneNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)));
+                if (hasPhoneNumber > 0) {
+                    Cursor phoneCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID+ " = ?", new String[]{cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID))}, null);
+                    while (phoneCursor.moveToNext()) {
+                        newContact.numero = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    }
+                    phoneCursor.close();
+                }
+
+
+                // AJOUT A FIREBASE SI EXISTE
+                final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                if(firebaseUser != null) {
+                    final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+                    ref.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for(DataSnapshot userSnapshot: dataSnapshot.getChildren()){
+                                String uid = userSnapshot.getKey();
+                                User user = userSnapshot.getValue(User.class);
+                                if(user.getNumero() != null && PhoneNumberUtils.compare(user.getNumero(), newContact.numero)){
+                                    ref.child("friends").child(firebaseUser.getUid()).push().setValue(uid);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+            cursor.close();
         }
     }
 

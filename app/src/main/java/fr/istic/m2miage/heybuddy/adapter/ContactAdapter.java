@@ -1,21 +1,25 @@
 package fr.istic.m2miage.heybuddy.adapter;
 
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.istic.m2miage.heybuddy.R;
+import fr.istic.m2miage.heybuddy.firebase.User;
 
 /**
  * Created by mahdi on 01/12/16.
@@ -26,9 +30,9 @@ public class ContactAdapter extends BaseAdapter {
     private List<Contact> contactList;
     private Activity activity;
     private class Contact {
+
         private long id;
         private String name;
-        private String lastName;
         private String image;
 
         public long getId() {
@@ -45,14 +49,6 @@ public class ContactAdapter extends BaseAdapter {
 
         public void setName(String name) {
             this.name = name;
-        }
-
-        public String getLastName() {
-            return lastName;
-        }
-
-        public void setLastName(String lastName) {
-            this.lastName = lastName;
         }
 
         public String getImage() {
@@ -92,37 +88,49 @@ public class ContactAdapter extends BaseAdapter {
         View item =  inflater.inflate(R.layout.contact_list_item,null,false);
 
         TextView txtContactName   = (TextView) item.findViewById(R.id.txtContactName);
-        TextView txtContactSurname = (TextView) item.findViewById(R.id.txtContactName);
-        ImageView imgContact = (ImageView) item.findViewById(R.id.imgContact);
-
         Contact contact = this.contactList.get(i);
-
         txtContactName.setText(contact.getName());
-        txtContactSurname.setText(contact.getLastName());
-        imgContact.setImageURI(Uri.parse(contact.getImage()));
 
         return item;
     }
 
     private void initPhoneContactList() {
-        ContentResolver contentResolver = this.activity.getContentResolver();
-        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(firebaseUser != null) {
+            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
-        if(cursor.getCount() > 0) {
-            while(cursor.moveToNext()) {
-                Contact newContact = new Contact();
-                newContact.setId(cursor.getLong(cursor.getColumnIndex(ContactsContract.Contacts._ID)));
-                newContact.setName(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
-                newContact.setLastName(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
-                if(cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_ID)) > 0) {
-                    newContact.setImage(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI)));
+            // GET USERS UID
+            ref.child("friends").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot friendSnapshot: dataSnapshot.getChildren()){
+                        // Get Friend UID
+                        String friendUid = friendSnapshot.getValue(String.class);
+
+                        // Get Friend OBJECT
+                        ref.child("users").child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                User user = dataSnapshot.getValue(User.class);
+                                Contact contact = new Contact();
+                                contact.setName(user.getUsername());
+                                contactList.add(contact);
+                                notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
                 }
-                else {
-                    newContact.setImage("");
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
                 }
-                this.contactList.add(newContact);
-            }
-            cursor.close();
+            });
         }
     }
 }
