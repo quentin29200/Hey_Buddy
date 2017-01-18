@@ -8,6 +8,7 @@ public class User {
     private String username;
     private String email;
     private String numero;
+    private String token;
 
     /**
      * Constructeur par défaut, requis pour appeler DataSnapshot.getValue(User.class)
@@ -72,5 +73,13 @@ public class User {
      */
     public void setNumero(String numero) {
         this.numero = numero;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
