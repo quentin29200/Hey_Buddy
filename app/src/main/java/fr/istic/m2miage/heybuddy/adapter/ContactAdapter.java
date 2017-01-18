@@ -36,6 +36,7 @@ public class ContactAdapter extends BaseAdapter {
     private class Contact {
 
         private long id;
+        private String uid;
         private String name;
         private String image;
 
@@ -45,6 +46,14 @@ public class ContactAdapter extends BaseAdapter {
 
         public void setId(long id) {
             this.id = id;
+        }
+
+        public String getUid() {
+            return uid;
+        }
+
+        public void setUid(String uid) {
+            this.uid = uid;
         }
 
         public String getName() {
@@ -116,7 +125,7 @@ public class ContactAdapter extends BaseAdapter {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for(DataSnapshot friendSnapshot: dataSnapshot.getChildren()){
                         // Get Friend UID
-                        String friendUid = friendSnapshot.getValue(String.class);
+                        final String friendUid = friendSnapshot.getValue(String.class);
 
                         // Get Friend OBJECT
                         ref.child("users").child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -125,6 +134,7 @@ public class ContactAdapter extends BaseAdapter {
                                 User user = dataSnapshot.getValue(User.class);
                                 Contact contact = new Contact();
                                 contact.setName(user.getUsername());
+                                contact.setUid(friendUid);
                                 contactList.add(contact);
                                 notifyDataSetChanged();
                             }
