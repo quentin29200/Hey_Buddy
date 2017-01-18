@@ -25,7 +25,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,7 +36,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+
 import fr.istic.m2miage.heybuddy.R;
+import fr.istic.m2miage.heybuddy.firebase.Contact;
 import fr.istic.m2miage.heybuddy.firebase.FirebaseUtil;
 import fr.istic.m2miage.heybuddy.firebase.Position;
 
@@ -41,10 +47,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     protected GoogleMap googleMap;
     private MapView mapView;
-    protected MarkerOptions  friend = new MarkerOptions();
+    protected Marker friend;
+    private BitmapDescriptor icon;
     private static long MIN_TIME_UPDATE = 60000;
     private static long MIN_DISTANCE_UPDATES = 150;
     final private static int ALLOW_APP_GPS = 0;
+    private HashMap<String, Marker> markers;
+
 
     /**
      * Check the documentation here
@@ -61,19 +70,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         // Initialization of the root layer
         MapView mapView = (MapView) inflater.inflate(R.layout.activity_maps, container, false);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        // SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        // mapFragment.getMapAsync(this);
-
         try {
-            //View v = getView();
-            //mapView = (MapView) v.findViewById(R.id.map);
             mapView.onCreate(savedInstanceState);
             mapView.onResume();
             mapView.getMapAsync(this);
         } catch (NullPointerException npe) {
             Log.e("ERROR", npe.getMessage());
         }
+
+        // Initialize HashMap Markers
+        this.markers = new HashMap<>();
+
+        // Initialize Icon
+        this.icon = BitmapDescriptorFactory.fromResource(R.drawable.heybuddy_logo);
 
         // Must return the root layer*/
         return mapView;
@@ -195,32 +204,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     /**
-     * @param uid - {String} User to show on the map
+     * @param contact - {Contact} User to show on the map
      */
-    public void showFriendOnMap(@NonNull String uid) {
-        //friendToShow = u;
+    public void showFriendOnMap(@NonNull final Contact contact) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
-        ref.child("positions").child(uid).addValueEventListener(new ValueEventListener() {
+        ref.child("positions").child(contact.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Position pos = dataSnapshot.getValue(Position.class);
+                String friendUid = dataSnapshot.getKey();
+                Log.d("friend key", dataSnapshot.getKey());
+
                 Double lat = pos.getLatitude();
                 Double lon = pos.getLongitude();
                 Log.d("User latitude", lat+"");
                 Log.d("User longitude", lon+"");
 
-                friend = new MarkerOptions()
+                if (markers.containsKey(friendUid)) {
+                    friend = markers.get(friendUid);
+                    friend.remove();
+                    markers.remove(friendUid);
+                }
+
+                MarkerOptions Location = new MarkerOptions()
                         .position(new LatLng(lat, lon))
-                        .title("toto");
+                        .title(contact.getName())
+                        .icon(icon);
+                friend = googleMap.addMarker(Location);
 
-                googleMap.addMarker(friend);
-
-                /*for (DataSnapshot child: dataSnapshot.getChildren()) {
-                    Double  child.getValue();
-                    Log.d("User key", p.getLatitude()+"");
-                   // String lat = (String) child.child("latitude").getValue();
-                }*/
+                markers.put(friendUid, friend);
             }
 
             @Override
@@ -228,40 +241,5 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             }
         });
-
-       /* ref.child("positions").equals(uid).addChildEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Position position = (Position) dataSnapshot.getValue();
-                System.out.println(position.toString());
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });*/
-
-
-
-        //myHandler = new Handler();
-        //myHandler.postDelayed(myRunnable,30000);
-    }
-
-    // Show friend's position every 30 sec
-    private Handler myHandler;
-    private Runnable myRunnable = new Runnable() {
-        @Override
-        public void run() {
-            int lat = 0; // User.getLat();
-            int lng = 0; // User.getLng();
-
-            myHandler.postDelayed(this,30000);
-        }
-    };
-
-    public void onPause() {
-        super.onPause();
-        // Stop callback
-        if(myHandler != null)
-            myHandler.removeCallbacks(myRunnable);
     }
 }
