@@ -84,11 +84,6 @@ public class FirebaseUtil {
         }
 
         if(cursor.getCount() > 0) {
-            final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-            if(firebaseUser != null){
-                final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                //ref.child("friends").child(firebaseUser.getUid()).removeValue();
-            }
 
             while(cursor.moveToNext()) {
 
@@ -116,6 +111,7 @@ public class FirebaseUtil {
 
 
                 // AJOUT A FIREBASE SI EXISTE
+                final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                 if(firebaseUser != null) {
                     final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
