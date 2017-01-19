@@ -25,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -46,7 +47,7 @@ import fr.istic.m2miage.heybuddy.firebase.Position;
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     protected GoogleMap googleMap;
-    private MapView mapView;
+    private LatLng currentPosition;
     protected Marker friend;
     private BitmapDescriptor icon;
     private static long MIN_TIME_UPDATE = 60000;
@@ -86,6 +87,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         // Must return the root layer*/
         return mapView;
+
     }
 
 
@@ -166,16 +168,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 public void onLocationChanged(Location location) {
                     Log.i("MapsFragment", "Update Location user : " + FirebaseUtil.getUserEmail() );
-                    LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
+                    currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
                     // Zoom to the current position
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
-                    googleMap.moveCamera(CameraUpdateFactory.zoomBy(13));
+                    googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
                     // Send position to Firebase
                     FirebaseUtil.setUserPosition(currentPosition.latitude, currentPosition.longitude);
                 }
             });
             Log.i("MapsFragment", "Send first Location user : " + FirebaseUtil.getUserEmail() );
             this.googleMap.setMyLocationEnabled(true);
+            this.googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+
         } catch (Exception ex) {
             Log.e("MapsFragment", "Error creating location service: " + ex.getMessage());
         }
@@ -204,11 +208,37 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     /**
+     * Show the last user position on the map
+     */
+    public void showMe() {
+        // Zoom to the current position
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
+    }
+
+    /**
      * @param contact - {Contact} User to show on the map
      */
     public void showFriendOnMap(@NonNull final Contact contact) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
+        // Action do first time
+        ref.child("positions").child(contact.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Position pos = dataSnapshot.getValue(Position.class);
+                LatLng friendPosition = new LatLng(pos.getLatitude(), pos.getLongitude());
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(friendPosition));
+                googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        // Add listener on change
         ref.child("positions").child(contact.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

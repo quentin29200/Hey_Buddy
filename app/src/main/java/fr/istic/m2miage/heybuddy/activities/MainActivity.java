@@ -3,6 +3,8 @@ package fr.istic.m2miage.heybuddy.activities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -38,8 +40,10 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
     @BindView(R.id.lstPhoneContact) ListView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToggle;
+    @BindView(R.id.floatLocation) FloatingActionButton floatLocation;
+    @BindView(R.id.navigationView) NavigationView navigationView;
 
+    private ActionBarDrawerToggle mDrawerToggle;
     private ContactAdapter contactAdapter;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
@@ -111,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_drawer);
 
         // Add the MapFragment
-        Class fragmentClass = MapFragment.class;
+        final Class fragmentClass = MapFragment.class;
         Fragment fragment = null;
         try {
             fragment = (Fragment) fragmentClass.newInstance();
@@ -122,6 +126,14 @@ public class MainActivity extends AppCompatActivity {
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment, "map").commit();
+
+        this.floatLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("map");
+                mapFragment.showMe();
+            }
+        });
     }
 
     @Override
@@ -129,5 +141,13 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public DrawerLayout getmDrawerLayout() {
+        return mDrawerLayout;
+    }
+
+    public NavigationView getNavigationView() {
+        return navigationView;
     }
 }

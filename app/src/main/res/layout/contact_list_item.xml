@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@android:color/white"
@@ -22,16 +23,16 @@
 
         <ImageView
             android:id="@+id/imgContact"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:scaleType="fitXY" />
 
         <ImageView
             android:id="@+id/imgDefault"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:scaleType="fitXY"
-            android:src="@mipmap/user"/>
+            android:src="@drawable/avatar" />
     </FrameLayout>
 
     <TextView
@@ -39,18 +40,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:textSize="13sp"
-        android:textStyle="normal|bold"
+        android:textSize="18sp"
         android:layout_toRightOf="@+id/contactImg"
         android:layout_toEndOf="@+id/contactImg"/>
 
     <ImageButton
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@android:drawable/ic_menu_mylocation"
-        android:layout_below="@+id/contactImg"
+        android:layout_height="35dp"
+        app:srcCompat="@drawable/send"
+        android:id="@+id/imageButton2"
+        android:background="@android:color/white"
+        android:layout_marginRight="17dp"
+        android:layout_marginEnd="17dp"
+        android:layout_alignTop="@+id/showThisFriend"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:id="@+id/showThisFriend" />
+        android:layout_alignBottom="@+id/contactImg" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        app:srcCompat="@drawable/location"
+        android:id="@+id/showThisFriend"
+        android:background="@android:color/white"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/contactImg"
+        android:layout_toLeftOf="@+id/imageButton2"
+        android:layout_toStartOf="@+id/imageButton2"
+        android:layout_marginRight="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_alignBottom="@+id/contactImg" />
 
 </RelativeLayout>
