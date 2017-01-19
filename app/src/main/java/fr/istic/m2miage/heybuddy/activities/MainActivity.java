@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
     @BindView(R.id.lstPhoneContact) ListView mDrawerList;
     @BindView(R.id.floatLocation) FloatingActionButton floatLocation;
+    @BindView(R.id.navigationView) NavigationView navigationView;
 
     private ActionBarDrawerToggle mDrawerToggle;
     private ContactAdapter contactAdapter;
@@ -145,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         return mDrawerLayout;
     }
 
-    public ListView getmDrawerList() {
-        return mDrawerList;
+    public NavigationView getNavigationView() {
+        return navigationView;
     }
 }

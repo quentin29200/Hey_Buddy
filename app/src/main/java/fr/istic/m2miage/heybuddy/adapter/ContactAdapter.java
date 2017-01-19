@@ -68,7 +68,7 @@ public class ContactAdapter extends BaseAdapter {
         imgShowFriend.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 MapFragment mapFragment = (MapFragment) activity.getSupportFragmentManager().findFragmentByTag("map");
-                activity.getmDrawerLayout().closeDrawer(activity.getmDrawerList());
+                activity.getmDrawerLayout().closeDrawer(activity.getNavigationView());
                 mapFragment.showFriendOnMap(contact);
             }
         });
