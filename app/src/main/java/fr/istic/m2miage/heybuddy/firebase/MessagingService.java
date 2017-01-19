@@ -34,12 +34,13 @@ public class MessagingService extends FirebaseMessagingService {
         }
     }
 
-    private void sendMessage(String to, String title, String message) {
+    private void sendMessage(String to, String from, String title, String message) {
 
         FirebaseMessaging fm = FirebaseMessaging.getInstance();
 
         fm.send(new RemoteMessage.Builder(SENDER_ID + "@gcm.googleapis.com")
                 .addData("to", to)
+                .addData("from", from)
                 .addData("title", title)
                 .addData("message",message)
                 .build());
@@ -49,7 +50,7 @@ public class MessagingService extends FirebaseMessagingService {
         try {
             JSONObject data = json.getJSONObject("data");
 
-            String title = data.getString("title");
+            String title = data.getString("from") + " " + data.getString("title");
             String message = data.getString("message");
 
             NotificationsManager mNotificationManager = new NotificationsManager(getApplicationContext());
