@@ -1,5 +1,6 @@
 package fr.istic.m2miage.heybuddy.activities;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
     @BindView(R.id.lstPhoneContact) ListView mDrawerList;
     @BindView(R.id.floatLocation) FloatingActionButton floatLocation;
+    @BindView(R.id.floatMenu) FloatingActionButton floatMenu;
     @BindView(R.id.navigationView) NavigationView navigationView;
 
     private ActionBarDrawerToggle mDrawerToggle;
@@ -91,8 +94,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setHomeButtonEnabled(true);
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
@@ -134,14 +137,23 @@ public class MainActivity extends AppCompatActivity {
                 mapFragment.showMe();
             }
         });
+
+        this.floatMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDrawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
+
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
-    }
+    }*/
+
 
     public DrawerLayout getmDrawerLayout() {
         return mDrawerLayout;
