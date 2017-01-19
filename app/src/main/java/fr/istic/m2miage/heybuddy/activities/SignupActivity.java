@@ -100,6 +100,7 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
             public void onClick(View view) {
                 Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -152,9 +153,6 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
                             user.setNumero(mPhoneNumber);
                             FirebaseUtil.addUser(user);
 
-                            // Recherche des contacts de l'utilisateur
-                            FirebaseUtil.addFriendsFromContacts(SignupActivity.this);
-
                             Toast.makeText(getApplicationContext(), "Inscription réussie", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(SignupActivity.this, MainActivity.class));
                             finish();
@@ -200,9 +198,7 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
                             String mPhoneNumber = tMgr.getLine1Number();
                             User user = new User(acct.getEmail(), acct.getEmail());
                             user.setNumero(mPhoneNumber);
-
-                            // Recherche des contacts de l'utilisateur
-                            FirebaseUtil.addFriendsFromContacts(SignupActivity.this);
+                            FirebaseUtil.addUser(user);
 
                             Toast.makeText(getApplicationContext(), "Inscription réussie", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(SignupActivity.this, MainActivity.class));

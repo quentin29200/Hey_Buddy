@@ -84,6 +84,12 @@ public class FirebaseUtil {
         }
 
         if(cursor.getCount() > 0) {
+            final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            if(firebaseUser != null){
+                final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                //ref.child("friends").child(firebaseUser.getUid()).removeValue();
+            }
+
             while(cursor.moveToNext()) {
 
                 // GET CONTACT DATA
@@ -110,7 +116,6 @@ public class FirebaseUtil {
 
 
                 // AJOUT A FIREBASE SI EXISTE
-                final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                 if(firebaseUser != null) {
                     final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
@@ -120,13 +125,16 @@ public class FirebaseUtil {
                             for(DataSnapshot userSnapshot: dataSnapshot.getChildren()){
                                 final String uid = userSnapshot.getKey();
                                 User user = userSnapshot.getValue(User.class);
-                                if(user.getNumero() != null && PhoneNumberUtils.compare(user.getNumero(), newContact.numero)){
+                                if(user.getNumero() != null && PhoneNumberUtils.compare(user.getNumero(), newContact.numero)
+                                        && !firebaseUser.getUid().equals(uid)){
                                     ref.child("friends").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            Map<String, String> friend = (Map<String, String>) dataSnapshot.getValue();
-                                            if(friend != null && !friend.containsValue(uid)){
-                                                ref.child("friends").child(firebaseUser.getUid()).push().setValue(uid);
+                                        public void onDataChange(DataSnapshot ds) {
+                                            if(ds != null){
+                                                Map<String, String> amis = (Map<String, String>)ds.getValue();
+                                                if(amis == null || !amis.containsValue(uid)){
+                                                    ref.child("friends").child(firebaseUser.getUid()).push().setValue(uid);
+                                                }
                                             }
                                         }
 

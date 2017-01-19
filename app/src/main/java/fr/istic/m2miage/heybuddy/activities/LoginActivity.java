@@ -103,6 +103,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
     }
@@ -148,7 +149,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         progressBar.setVisibility(View.VISIBLE);
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
-        progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -166,6 +166,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+                        progressBar.setVisibility(View.GONE);
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
@@ -175,13 +176,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             // Ajout de l'utilisateur sur Firebase
-                            TelephonyManager tMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                            TelephonyManager tMgr = (TelephonyManager) LoginActivity.this.getSystemService(Context.TELEPHONY_SERVICE);
                             String mPhoneNumber = tMgr.getLine1Number();
                             User user = new User(acct.getEmail(), acct.getEmail());
                             user.setNumero(mPhoneNumber);
-
-                            // Recherche des contacts de l'utilisateur
-                            FirebaseUtil.addFriendsFromContacts(LoginActivity.this);
+                            FirebaseUtil.addUser(user);
 
                             Toast.makeText(getApplicationContext(), "Connexion réussie", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));

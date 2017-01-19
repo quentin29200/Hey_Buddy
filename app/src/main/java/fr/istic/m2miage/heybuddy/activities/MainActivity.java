@@ -30,6 +30,7 @@ import butterknife.ButterKnife;
 import fr.istic.m2miage.heybuddy.R;
 import fr.istic.m2miage.heybuddy.adapter.ContactAdapter;
 import fr.istic.m2miage.heybuddy.firebase.FirebaseInstanceIdManager;
+import fr.istic.m2miage.heybuddy.firebase.FirebaseUtil;
 import fr.istic.m2miage.heybuddy.firebase.User;
 import fr.istic.m2miage.heybuddy.fragments.MapFragment;
 
@@ -78,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
             });
             sharedPreferences.edit().remove("token").apply();
         }
+
+        // Recherche des contacts de l'utilisateur
+        FirebaseUtil.addFriendsFromContacts(MainActivity.this);
 
         mTitle = mDrawerTitle = getTitle();
 
