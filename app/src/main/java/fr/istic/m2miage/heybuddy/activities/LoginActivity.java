@@ -1,10 +1,12 @@
 package fr.istic.m2miage.heybuddy.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -172,8 +174,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             Toast.makeText(LoginActivity.this, "L'authentification a échoué",
                                     Toast.LENGTH_SHORT).show();
                         } else {
+                            // Ajout de l'utilisateur sur Firebase
+                            TelephonyManager tMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                            String mPhoneNumber = tMgr.getLine1Number();
                             User user = new User(acct.getEmail(), acct.getEmail());
-                            FirebaseUtil.addUser(user);
+                            user.setNumero(mPhoneNumber);
+
+                            // Recherche des contacts de l'utilisateur
+                            FirebaseUtil.addFriendsFromContacts(LoginActivity.this);
+
                             Toast.makeText(getApplicationContext(), "Connexion réussie", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();

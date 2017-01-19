@@ -195,8 +195,15 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
                             Toast.makeText(SignupActivity.this, "L'authentification a échoué",
                                     Toast.LENGTH_SHORT).show();
                         } else {
+                            // Ajout de l'utilisateur sur Firebase
+                            TelephonyManager tMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                            String mPhoneNumber = tMgr.getLine1Number();
                             User user = new User(acct.getEmail(), acct.getEmail());
-                            FirebaseUtil.addUser(user);
+                            user.setNumero(mPhoneNumber);
+
+                            // Recherche des contacts de l'utilisateur
+                            FirebaseUtil.addFriendsFromContacts(SignupActivity.this);
+
                             Toast.makeText(getApplicationContext(), "Inscription réussie", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(SignupActivity.this, MainActivity.class));
                             finish();
