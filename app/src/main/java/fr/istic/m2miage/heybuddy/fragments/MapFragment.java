@@ -171,7 +171,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
                     // Zoom to the current position
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
-                    googleMap.moveCamera(CameraUpdateFactory.zoomBy(15));
+                    googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
                     // Send position to Firebase
                     FirebaseUtil.setUserPosition(currentPosition.latitude, currentPosition.longitude);
                 }
@@ -228,6 +228,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Position pos = dataSnapshot.getValue(Position.class);
                 LatLng friendPosition = new LatLng(pos.getLatitude(), pos.getLongitude());
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(friendPosition));
+                googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+
             }
 
             @Override
