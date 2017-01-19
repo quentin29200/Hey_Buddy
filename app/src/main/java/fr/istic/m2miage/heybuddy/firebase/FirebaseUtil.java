@@ -50,7 +50,10 @@ public class FirebaseUtil {
 
     public static String getUserEmail(){
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        return firebaseUser.getEmail();
+        if(firebaseUser != null) {
+            return firebaseUser.getEmail();
+        }
+        return null;
     }
 
     /**
