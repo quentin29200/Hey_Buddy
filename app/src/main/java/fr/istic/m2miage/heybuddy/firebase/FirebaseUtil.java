@@ -16,6 +16,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Classe utilitaire qui permet de manipuler la base de données Firebase
@@ -117,10 +118,23 @@ public class FirebaseUtil {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for(DataSnapshot userSnapshot: dataSnapshot.getChildren()){
-                                String uid = userSnapshot.getKey();
+                                final String uid = userSnapshot.getKey();
                                 User user = userSnapshot.getValue(User.class);
                                 if(user.getNumero() != null && PhoneNumberUtils.compare(user.getNumero(), newContact.numero)){
-                                    ref.child("friends").child(firebaseUser.getUid()).push().setValue(uid);
+                                    ref.child("friends").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            Map<String, String> friend = (Map<String, String>) dataSnapshot.getValue();
+                                            if(friend != null && !friend.containsValue(uid)){
+                                                ref.child("friends").child(firebaseUser.getUid()).push().setValue(uid);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
                                 }
                             }
                         }

@@ -1,7 +1,6 @@
 package fr.istic.m2miage.heybuddy.adapter;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +37,6 @@ public class ContactAdapter extends BaseAdapter {
 
     public ContactAdapter(Activity activity) {
         this.activity = (MainActivity) activity;
-        this.contactList = new ArrayList<>();
        // Log.i("MapFragment Contact", mapFragment.getClass().toString());
         initPhoneContactList();
     }
@@ -78,6 +76,7 @@ public class ContactAdapter extends BaseAdapter {
     }
 
     private void initPhoneContactList() {
+        this.contactList = new ArrayList<>();
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseUser != null) {
             final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
