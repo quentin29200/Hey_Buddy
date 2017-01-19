@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="center"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:padding="10dp" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:background="@mipmap/connection_background">
+
+    <ImageView
+        android:layout_width="match_parent"
+        app:srcCompat="@mipmap/ic_launcher"
+        android:id="@+id/hey_buddy_logo"
+        android:layout_marginTop="10dp"
+        android:layout_height="150dp"
+        android:contentDescription="Hey Buddy Logo"
+        tools:ignore="HardcodedText" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/signup_input_layout_email"
+        android:layout_below="@id/hey_buddy_logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="17dp">
         <EditText
             android:id="@+id/signup_input_email"
             android:layout_width="match_parent"
@@ -21,6 +35,7 @@
     </android.support.design.widget.TextInputLayout>
     <android.support.design.widget.TextInputLayout
         android:id="@+id/signup_input_layout_password"
+        android:layout_below="@id/signup_input_layout_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
@@ -33,29 +48,10 @@
             android:hint="@string/hint_password" />
     </android.support.design.widget.TextInputLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp">
-        <Button android:id="@+id/btn_signup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="@string/bnt_signup"
-            android:background="@color/colorPrimaryDark"
-            android:textColor="@android:color/white"/>
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/btn_google_signup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5" />
-    </LinearLayout>
-
     <Button android:id="@+id/btn_link_login"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:text="@string/btn_login"
         android:background="@android:color/transparent"
         android:layout_marginTop="10dp"
@@ -63,5 +59,37 @@
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/signup_input_layout_password"
+        android:layout_centerHorizontal="true"
         android:id="@+id/progressBar"/>
-</LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_btn_signup"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_above="@id/btn_link_login"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentRight="false">
+
+        <Button android:id="@+id/btn_signup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="@string/bnt_signup"
+            tools:ignore="RtlHardcoded"
+            android:background="@color/colorPrimaryDark"
+            android:textColor="@android:color/white"/>
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/btn_google_signup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"/>
+    </LinearLayout>
+
+</RelativeLayout>
