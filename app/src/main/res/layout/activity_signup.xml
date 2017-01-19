@@ -24,6 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_marginBottom="17dp">
         <EditText
             android:id="@+id/signup_input_email"
@@ -38,6 +41,9 @@
         android:layout_below="@id/signup_input_layout_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_marginTop="10dp">
         <EditText
             android:id="@+id/signup_input_password"
