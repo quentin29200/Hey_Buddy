@@ -45,8 +45,8 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
 
     public static final String TAG = SignupActivity.class.getName();
     private static final int RC_SIGN_IN = 9001;
-    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
-    private static final int PERMISSIONS_REQUEST_READ_PHONE_STATE = 101;
+
+    private static final int PERMISSIONS_REQUEST_CONTACT_PHONE = 102;
 
     private GoogleApiClient mGoogleApiClient;
     private FirebaseAuth auth;
@@ -105,15 +105,19 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            if(checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSIONS_REQUEST_READ_PHONE_STATE);
-                //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+
+
+            if(checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{
+                                Manifest.permission.READ_CONTACTS,
+                                Manifest.permission.READ_PHONE_STATE},
+                        PERMISSIONS_REQUEST_CONTACT_PHONE);
             }
 
-            if(checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
-                //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
-            }
+//            if(checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+//                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+//                //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+//            }
         }
     }
 
@@ -267,7 +271,7 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
         switch (requestCode){
-            case PERMISSIONS_REQUEST_READ_PHONE_STATE: {
+            case PERMISSIONS_REQUEST_CONTACT_PHONE: {
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     // Do something
                 } else {
@@ -275,14 +279,14 @@ public class SignupActivity extends AppCompatActivity implements GoogleApiClient
                 }
                 return;
             }
-            case PERMISSIONS_REQUEST_READ_CONTACTS: {
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    // Do something
-                } else {
-                    Toast.makeText(this, "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
-                }
-                return;
-            }
+//            case PERMISSIONS_REQUEST_READ_CONTACTS: {
+//                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+//                    // Do something
+//                } else {
+//                    Toast.makeText(this, "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
+//                }
+//                return;
+//            }
         }
     }
 }

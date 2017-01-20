@@ -1,9 +1,12 @@
 package fr.istic.m2miage.heybuddy.firebase;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.ContactsContract;
+import android.support.v4.content.ContextCompat;
 import android.telephony.PhoneNumberUtils;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -75,86 +78,77 @@ public class FirebaseUtil {
      * @param activity L'activité qui appelle la méthode.
      */
     public static void addFriendsFromContacts(Activity activity){
-        ContentResolver contentResolver = activity.getContentResolver();
-        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+            ContentResolver contentResolver = activity.getContentResolver();
+            Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 
-        class Contact{
-            private long id;
-            private String name;
-            private String lastName;
-            private String image;
-            private String numero;
-        }
+            if (cursor.getCount() > 0) {
 
-        if(cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
 
-            while(cursor.moveToNext()) {
-
-                // GET CONTACT DATA
-                final Contact newContact = new Contact();
-                newContact.id = cursor.getLong(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                newContact.name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                newContact.lastName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                if(cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_ID)) > 0) {
-                    newContact.image = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
-                }
-                else {
-                    newContact.image = "";
-                }
-
-                int hasPhoneNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)));
-                if (hasPhoneNumber > 0) {
-                    Cursor phoneCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID+ " = ?", new String[]{cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID))}, null);
-                    while (phoneCursor.moveToNext()) {
-                        newContact.numero = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    // GET CONTACT DATA
+                    final Contact newContact = new Contact();
+                    newContact.setId(cursor.getLong(cursor.getColumnIndex(ContactsContract.Contacts._ID)));
+                    newContact.setName(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
+                    newContact.setLastName(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
+                    if (cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_ID)) > 0) {
+                        newContact.setImage(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI)));
+                    } else {
+                        newContact.setImage("");
                     }
-                    phoneCursor.close();
-                }
+
+                    int hasPhoneNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)));
+                    if (hasPhoneNumber > 0) {
+                        Cursor phoneCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID))}, null);
+                        while (phoneCursor.moveToNext()) {
+                            newContact.setNumero(phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                        }
+                        phoneCursor.close();
+                    }
 
 
-                // AJOUT A FIREBASE SI EXISTE
-                final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                if(firebaseUser != null) {
-                    final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                    // AJOUT A FIREBASE SI EXISTE
+                    final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                    if (firebaseUser != null) {
+                        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
-                    ref.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for(DataSnapshot userSnapshot: dataSnapshot.getChildren()){
-                                final String uid = userSnapshot.getKey();
-                                User user = userSnapshot.getValue(User.class);
-                                if(user.getNumero() != null && PhoneNumberUtils.compare(user.getNumero(), newContact.numero)
-                                        && !firebaseUser.getUid().equals(uid)){
-                                    ref.child("friends").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot ds) {
-                                            if(ds != null){
-                                                Map<String, String> amis = (Map<String, String>)ds.getValue();
-                                                if(amis == null || !amis.containsValue(uid)){
-                                                    ref.child("friends").child(firebaseUser.getUid()).push().setValue(uid);
+                        ref.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                                    final String uid = userSnapshot.getKey();
+                                    User user = userSnapshot.getValue(User.class);
+                                    if (user.getNumero() != null && PhoneNumberUtils.compare(user.getNumero(), newContact.getNumero())
+                                            && !firebaseUser.getUid().equals(uid)) {
+                                        ref.child("friends").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot ds) {
+                                                if (ds != null) {
+                                                    Map<String, String> amis = (Map<String, String>) ds.getValue();
+                                                    if (amis == null || !amis.containsValue(uid)) {
+                                                        ref.child("friends").child(firebaseUser.getUid()).push().setValue(uid);
+                                                    }
                                                 }
                                             }
-                                        }
 
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
 
-                                        }
-                                    });
+                                            }
+                                        });
+                                    }
                                 }
                             }
-                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
 
-                        }
-                    });
+                            }
+                        });
+                    }
                 }
+                cursor.close();
             }
-            cursor.close();
-        }
     }
 
     /**

@@ -235,10 +235,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Position pos = dataSnapshot.getValue(Position.class);
-                LatLng friendPosition = new LatLng(pos.getLatitude(), pos.getLongitude());
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(friendPosition));
-                googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-
+                if (pos != null) {
+                    LatLng friendPosition = new LatLng(pos.getLatitude(), pos.getLongitude());
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(friendPosition));
+                    googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+                } else {
+                    Snackbar snackbar = Snackbar
+                            .make(getView(), "Localisation de votre amis indisponible", Snackbar.LENGTH_LONG);
+                    snackbar.setActionTextColor(Color.RED);
+                    snackbar.show();
+                }
             }
 
             @Override
@@ -252,27 +258,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Position pos = dataSnapshot.getValue(Position.class);
-                String friendUid = dataSnapshot.getKey();
-                Log.d("friend key", dataSnapshot.getKey());
+                if (pos != null) {
+                    String friendUid = dataSnapshot.getKey();
+                    Log.d("friend key", dataSnapshot.getKey());
 
-                Double lat = pos.getLatitude();
-                Double lon = pos.getLongitude();
-                Log.d("User latitude", lat+"");
-                Log.d("User longitude", lon+"");
+                    Double lat = pos.getLatitude();
+                    Double lon = pos.getLongitude();
+                    Log.d("User latitude", lat + "");
+                    Log.d("User longitude", lon + "");
 
-                if (markers.containsKey(friendUid)) {
-                    friend = markers.get(friendUid);
-                    friend.remove();
-                    markers.remove(friendUid);
+                    if (markers.containsKey(friendUid)) {
+                        friend = markers.get(friendUid);
+                        friend.remove();
+                        markers.remove(friendUid);
+                    }
+
+                    MarkerOptions Location = new MarkerOptions()
+                            .position(new LatLng(lat, lon))
+                            .title(contact.getName())
+                            .icon(icon);
+                    friend = googleMap.addMarker(Location);
+
+                    markers.put(friendUid, friend);
                 }
-
-                MarkerOptions Location = new MarkerOptions()
-                        .position(new LatLng(lat, lon))
-                        .title(contact.getName())
-                        .icon(icon);
-                friend = googleMap.addMarker(Location);
-
-                markers.put(friendUid, friend);
             }
 
             @Override

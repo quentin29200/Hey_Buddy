@@ -10,7 +10,9 @@ public class Contact {
     private long id;
     private String uid;
     private String name;
+    private String lastName;
     private String image;
+    private String numero;
 
     public long getId() {
         return id;
@@ -43,4 +45,12 @@ public class Contact {
     public void setImage(String image) {
         this.image = image;
     }
+
+    public String getLastName() { return lastName; }
+
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
+    public String getNumero() { return numero; }
+
+    public void setNumero(String numero) { this.numero = numero; }
 }
